@@ -1,0 +1,54 @@
+The following chapter elaborates on the methods and techniques used to compare the returns of applying deep learning algorithms to small cap- and large cap stock predictions. It presents a variety of deep learning models used for predicting returns for both large cap and small cap stocks on the Oslo Stock Exchange. The aim of the research is to evaluate if the excess returns of investing in small caps can be capitalized on, through deep learning algorithms being able to detect patterns and relationships within historical data and by making accurate predictions of the probability of future share price development. An important part of a research process is choosing the appropriate method and research design to correctly analyze information and data on the topic, as well as for others to be able to assess the reliability and validity of the paper. 
+
+\indent\newline
+The methodology and techniques used in this paper is inspired by the work of Krauss et al. and Lund et al. \cite{krauss} \cite{lund}. This means that a similar approach and framework for developing the algorithms and assessing the models' predictive performance is applied to predicting small cap stock returns. In addition to exploring the models' applicability to small cap stock returns, the paper will add on previous work in terms of implementing a gated recurrent unit (GRU) and a convolutional neural network (CNN).   
+
+\indent\newline
+The methodology can be decomposed into five sections, where the first three presents how the networks are trained and tested, how the dependent variable is created, the different independent features that are included, and the networks' hyperparameters. Further, an explanation of how the models' predictive performance are evaluated is presented, before defining different trading strategies and their applicability to a real-life trading scheme.  
+
+\section{Long Short-Term Memory Network}
+
+\subsection{Training and Testing}
+The process of training the algorithms starts by defining a study period based on the collected data set, which contains data from January 1st 2005 to December 31st 2020. This involves splitting the data into a training set and a test set. The training set has an interval of 750 trading days, while the test set has an interval of 250 trading days. Given that stock markets are closed on the weekend and during holidays, 750 trading days translates into approximately 3 years while 250 trading days translates into 1 year. The training period is where the LSTM-network learns the patterns within the data and adjusts parameters to increase predictive accuracy, while the trading sets (test sets) are used to make out-of-sample predictions. The study periods are divided into a total of 23 unique periods, where each period is set up as rolling blocks of 1000 days. This means that the first period of trading (testing) starts 750 days into the data set, where these first days are lost to training. Further, each study period begins 250 days after the previous one, to ensure that the trading periods are non-overlapping, which means testing the models' predictions on the same data is avoided \cite{krauss}.
+
+\indent\newline
+The training and testing sequences are applied to two different groups of stocks, where one is a group of small cap stocks that are constituents of the OSESX small cap index and the other is a group of large cap stocks that are constituents of the OSEBX benchmark index.  For both groups, $n_{i}$ denotes the number of stocks that are part of indices at the last day in study period $\textit{i}$. Some of the stocks may not have a full data history for each training period, due to either delisting, being listed at a later time, or implemented in another index. If stocks do not exhibit share price data after a certain point in the trading period, they are included for trading up until this point.     
+
+\subsection{Independent Variables}
+In order to improve model performance in terms of finding patterns and relationships within the data, several independent variables are used as input features for the models to train and test on. A large segment in the Norwegian economy is based on oil-related companies and represents a substantial part of the Oslo Stock Exchange's total market cap. Brent-oil price is therefore regarded as an important influence on the Oslo Stock Exchange and will be included as an input feature. Other independent variables that represent macroeconomic factors are the USD/NOK exchange rate and government bonds, which are also included as input features. Additional input features are based on technical indicators and consist of the stocks' daily volume, and moving averages with intervals of 50 and 200 days. Lastly, a measure of the broad market volatility is included as an input feature through daily data on the CBOE Volatility Index (VIX), also known as the fear index. The VIX captures market sentiment by measuring the relative strength of near-term price changes of the S\&P 500.  
+
+\subsection{Target Variable}
+
+\subsection{Hyperparameters}
+
+\section{Gated Recurrent Unit Network}
+
+\subsection{Training and Testing}
+
+\subsection{Independent Variables}
+
+\subsection{Target Variable}
+
+\subsection{Hyperparameters}
+
+\section{Convolutional Neural Network}
+
+\subsection{Training and Testing}
+
+\subsection{Independent Variables}
+
+\subsection{Target Variable}
+
+\subsection{Hyperparameters}
+
+\section{Performance Metrics}
+
+\section{Strategies}
+
+\section{Predictive Models }
+\subsection{ Benchmark Algorithms}
+Random forest is a classification algorithm which consists of a large number of individual decision trees that works like an ensemble. Decision trees split the data into branches, or subsets, where certain learning conditions enable the algorithm to classify observations. Random forest operates like an ensemble since it uses multiple algorithms to improve the performance and accuracy of the predictions. In a binary case, each individual tree performs a class prediction, where the class with most predictions is selected as the model's prediction. Combining several decision trees reduces the probability of overfitting and situations where the model finds optimal solutions that are local instead of global. Logistic regression is another algorithm used for classification problems. It resembles linear regression, but uses a more complex cost function known as the Sigmoid function to return a probability value \cite{pant}. 
+
+\subsection{Deep Learning Algorithms}
+The deep learning algorithms which will be used in the paper will consist of variations of neural networks that are based on both a feedforward architecture and recurrent architecture. Feedforward neural networks are regarded as simpler than recurrent neural networks since the information only moves forwards and not backwards through the network. In contrast, recurrent neural networks have connections between nodes characterized as a directed graph, which forms a cycle. The network is thus able to retain its state while processing the next sequence of inputs. Current suggestions for algorithms to be incorporated in the paper consist of simple recurrent neural networks (SRNN), gated recurrent units (GRU), and long short-term memory networks (LSTM). LSTM is a type of recurrent neural network and consists of cells, input and output gates, and a forget gate, which makes the algorithm well-suited for financial time series. GRU is also a form of recurrent neural network that possesses similar traits as LSTM. However, the algorithm does not have an output gate and therefore has fewer parameters than LSTM. Previous evidence suggests that the algorithm is suitable for smaller and less frequent data sets \cite{jun}.   
+   
