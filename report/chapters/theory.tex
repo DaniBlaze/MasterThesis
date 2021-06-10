@@ -13,7 +13,7 @@ Jensen's Alpha ($\alpha$) is a term within finance which was introduced in the l
 \textit{Jensen’s Alpha = Portfolio Rate of Return - Benchmark Portfolio Rate of Return}
 
 \indent \newline 
-\textit{Benchmark Portfolio Rate of Return = R_{f} + $\beta$ (R_{m} - R_{f})}
+\textit{Benchmark Portfolio Rate of Return} = $R_{f} + \beta (R_{m} - R_{f})$
 
 \indent \newline 
 \textit{Where,
@@ -219,10 +219,10 @@ Figure 2.2 illustrates a traditional neural network, where the nodes represent a
 Figure 2.3 shows an example of a simple neural network with an input layer consisting of two neurons and an output layer with 3 neurons. Each connection between two neurons is represented by a weight w, where each weight has indices. The first number of indices tells us the number of neurons from the connection's origin, while the second value tells us the number of neurons in the layer where the connection leads. The weights between the layers of a neural network can be illustrated through a weight matrix, which is shown below. 
 \indent\newline 
 \begin{center}
-\textit{W} = \begin{pmatrix}
+\textit{W} = $\begin{pmatrix}
 w_{11} & w_{12} & w_{13}\\
 w_{21} & w_{22} & w_{23}
-\end{pmatrix}
+\end{pmatrix}$
 \end{center}
 
 \indent\newline 
@@ -232,21 +232,21 @@ The number of entries in a weight matrix corresponds to the number of connection
 Having established the basic concepts and structures of a neural network, this section will look at how the network learns. Forward propagation consists of the step where the neural network performs a prediction vector based on an input feature vector \textit{x}. The prediction vector will here be termed as \textit{h}. The dot product of the weight matrix \textit{W} (explained in the previous section) and the input vector \textit{x} is then computed, which gives the vector \textit{z}.
 
 \indent\newline 
-\overrightarrow{x}^{T} \cdot W = \begin{pmatrix} x_{1}, & x_{2}
+$\overrightarrow{x}^{T} \cdot W$ = $\begin{pmatrix} x_{1}, & x_{2}
 \end{pmatrix} \cdot \begin{pmatrix}
 w_{11} & w_{12} & w_{13}\\
 w_{21} & w_{22} & w_{23}
-\end{pmatrix}}
+\end{pmatrix}$
   
 \indent\newline 
-= \begin{pmatrix}
+= $\begin{pmatrix}
 x_{1}w_{11}+x_{2}w_{21}, & x_{1}w_{12}+x_{2}w_{22}, & x_{1}w_{13}+x_{2}w_{23}
-\end{pmatrix}
+\end{pmatrix}$
 
 \indent\newline 
-= \begin{pmatrix}
+= $\begin{pmatrix}
 z_{1}, & z_{2}, & z_{3}
-\end{pmatrix} = \overrightarrow{z}, \overrightarrow{h} = \sigma(\overrightarrow{z})
+\end{pmatrix}$ = $\overrightarrow{z}, \overrightarrow{h}$ = $\sigma(\overrightarrow{z})$
 
 \indent\newline 
 In order to obtain the prediction vector \textit{h}, one of three non-linear activation functions is applied to the dot product vector \textit{z}. The three activation functions can be either tanh, sigmoid or ReLu, which enables a non-linear mapping from \textit{z} to \textit{h}. This allows the network to understand non-linear data through the linear combination value of the weights and neurons and the non-linear activation function.
@@ -261,7 +261,7 @@ Two of the most common loss functions implemented in deep learning are the mean 
 \textbf{Mean squared error loss:}
 
 \indent\newline 
-L(\theta) = \frac{1}{N} \sum_{i=0}^{N} (y_{i} - \widehat{y}_{i})^{2}
+$L(\theta) = \frac{1}{N} \sum_{i=0}^{N} (y_{i} - \widehat{y}_{i})^{2}$
 
 \indent\newline 
 Where,
@@ -274,7 +274,7 @@ $\widehat{y_{i}}$ = entries in the ground truth label $\widehat{\overrightarrow{
 \textbf{Cross-Entropy Loss:}
 
 \indent\newline 
-L(\theta) = - \sum_{i=0}^{N} \widehat{y_{i}} \cdot log(y_{i})
+$L(\theta) = - \sum_{i=0}^{N} \widehat{y_{i}} \cdot log(y_{i})$
 
 \indent\newline 
 Where,
@@ -301,13 +301,13 @@ Minimizing the loss function is solved mathematically by the method termed gradi
 The x-axis in figure 2.4 is the value of the weight, while the y-axis is the difference between the ground truth and the prediction, and essentially the network parameters (the value of the loss function). Using a quadratic loss function means that there is only a global minimum and not a local minimum. The global minimum represents the value of the weight that enables the network to make an accurate prediction, and is shown in the figure as the point where the loss function is equal to zero. In the fictive example shown in the figure, the initial prediction and weight value is relatively inaccurate. To improve the accuracy of the prediction, the next step involves updating the weight parameter until it reaches an optimized value for the weight. This is carried out by taking the derivative of the loss function with respect to the weight \textit{w}.
 
 \indent\newline
-\nabla_{w11} L(w_{11}) = \frac{\partial L(w_{11})}{\partial w_{11})}
+$\nabla_{w11} L(w_{11}) = \frac{\partial L(w_{11})}{\partial w_{11})}$
 
 \indent\newline
 The equation computes the tangent (slope) of the loss function for the point of where the initial weight lies. The figure shows that the tangent of the loss function would be positive, which would correspond to the network updating the weights to a higher loss value and making even more inaccurate predictions. However, this can be solved by multiplying the gradient by minus one to get the opposite direction of the gradient.  
 
 \indent\newline
-w_{11_{new}} = w_{11_{old}} - \epsilon \cdot \nabla_{w11} L(w_{11})
+$w_{11_{new}} = w_{11_{old}} - \epsilon \cdot \nabla_{w11} L(w_{11})$
 
 \indent\newline
 The equation above shows a step of the gradient descent where the network updates the value of the weight to make a more accurate prediction. In the equation, epsilon is implemented as the network’s learning rate and represents how quickly the parameters are updated. This method of updating the parameters continues until the loss function reaches a point of global minimum, which represents the optimal weight value for the network to perform accurate predictions \cite{opper}.  
@@ -351,31 +351,31 @@ Figure 2.6 illustrates the recurrent system of an LSTM. The yellow boxes represe
 One of the main differences between a simple RNN and an LSTM is the repeating module. A standard RNN only has a single neural network layer, while an LSTM has four interacting neural network layers. The horizontal line running through figure 2.7 illustrates the cell state $C_{t}$. This represents the flow of information through the network chain. In order for the LSTM to regulate the information being passed through, three different types of gates are used. The gates are made up of a neural network layer and a pointwise multiplication operation, and consist of a forget gate $f_{t}$, an input gate $i_{t}$, and an output gate $o_{t}$ \cite{olah}. The forget gate is a sigmoid layer that decides which parts of the information to forget. $f_{t}$ outputs a value between 1 and 0 for each number in the cell state $C_{t-1}$ by evaluating $h_{t-1}$ and $x_{t}$, where a value of 1 means keeping all of the information and a value of 0 means forgetting all of the information:
 
 \indent\newline 
-$f_{t}$ = \sigma(W_{f} \cdot[h_{t-1},x_{t}] + b_{f})
+$f_{t} = \sigma(W_{f} \cdot[h_{t-1},x_{t}] + b_{f})$
 
 \indent\newline 
 The next two parts of the LSTM decide what new information to be stored in the cell state. The first part consists of an input gate where a sigmoid layer decides which values to update\cite{olah}. Then, a vector of new candidate values Ct are created by a tahn layer, which represents potential values to be added to the state:
 
 \indent\newline 
-$i_{t}$ = \sigma(W_{f} \cdot[h_{t-1},x_{t}] + b_{i})
+$i_{t} = \sigma(W_{f} \cdot[h_{t-1},x_{t}] + b_{i})$
 
 \indent\newline 
-$\tilde{C_{t}}$ = tanh(W_{C} \cdot[h_{t-1},x_{t}] + b_{C})
+$\tilde{C_{t}} = tanh(W_{C} \cdot[h_{t-1},x_{t}] + b_{C})$
 
 \indent\newline 
 Having determined the information to forget and keep from memory, how much information that will be added to the memory, and candidate values to be added, the next step involves updating the cell state:
 
 \indent\newline 
-C_{t} = f_{t} \ast C_{t-1} + i_{t} \ast \tilde{C_{t}}
+$C_{t} = f_{t} \ast C_{t-1} + i_{t} \ast \tilde{C_{t}}$
 
 \indent\newline 
 The old state is multiplied with the forget gate layer $f_{t}$, while the new, scaled candidate values $i_{t}*\tilde{C_{t}}$ are added. The final step is for the LSTM to decide on the output. A sigmoid layer determines which parts of the cell state to output, before the cell state runs through a tanh layer in order to transform the values into values between -1 and 1 \cite{olah}: 
 
 \indent\newline 
-$o_{t}$ = \sigma(W_{o} \cdot[h_{t-1},x_{t}] + b_{o})
+$o_{t} = \sigma(W_{o} \cdot[h_{t-1},x_{t}] + b_{o})$
 
 \indent\newline 
-$h_{t}$ = o_{t} * tanh(C_{t})
+$h_{t} = o_{t} * tanh(C_{t})$
 
 \subsection{GRU}
 The Gated Recurrent Unit (GRU) is a variation of an RNN and an LSTM network. Compared to LSTM, the GRU is a more simple model where the forget and input gates are combined into an update gate, as well as having merged the cell state and hidden state \cite{olah}. 
@@ -392,25 +392,25 @@ The Gated Recurrent Unit (GRU) is a variation of an RNN and an LSTM network. Com
 In the update gate, $x_{t}$ is plugged into the network unit and multiplied by the weight $W_{z}$. $h_{t-1}$ holds previous information and is also multiplied by its weight $U_{z}$. Further, a sigmoid activation transforms the result into a value between 0 and 1 \cite{kosta}:
 
 \indent\newline 
-$z_{t}$ = \sigma(W_{z} x_{t} + U_{z} h_{t-1})
+$z_{t} = \sigma(W_{z} x_{t} + U_{z} h_{t-1})$
 
 \indent\newline 
 Similar to the LSTM, in this step the GRU determines which parts of the past information to pass along in the structure, where a value of 1 means copying all of the past information and a value of 0 means keeping none of the information. Further, the reset gate is used to determine which parts of the information to forget. The same logic of the update gate applies to the reset gate:
 
 \indent\newline 
-$r_{t}$ = \sigma(W_{r} x_{t} + U_{r} h_{t-1})
+$r_{t} = \sigma(W_{r} x_{t} + U_{r} h_{t-1})$
 
 \indent\newline 
 The next step of the process is introducing a memory content, in order for the network to be able to utilize the reset gate to store relevant information from the past \cite{kosta}:
 
 \indent\newline 
-$\tilde{h_{t}}$ = tanh(W_{x_{t}} + r_{t} * U_{h-1})
+$\tilde{h_{t}} = tanh(W_{x_{t}} + r_{t} * U_{h-1})$
 
 \indent\newline 
 The equation allows the model to determine what to remove from previous learned information, before applying the nonlinear activation function tanh, to transform the results into values between -1 and 1. The last step of the GRU is using the update gate to decide what information to collect from the current memory content $\tilde{h_{t}}$ and the previous steps $h_{t-1}$ \cite{kosta}. In order to do so, the model calculates $h_{t}$, which is a vector with information for the current unit and with a function of passing the information down in the network structure:
 
 \indent\newline 
-$h_{t}$ = z_{t} * h_{t-1} + (1 - z_{t}) * \tilde{h_{t}}
+$h_{t} = z_{t} * h_{t-1} + (1 - z_{t}) * \tilde{h_{t}}$
 
 \subsection{CNN}
 Convolutional neural networks (CNNs) is a type of feedforward neural network commonly used for image recognition and object classification. The structure of a CNN can be compared to the neurons in the human brain, where individual neurons respond to stimuli in several Receptive Fields (parts of the visual field) that overlap each other to cover the entire visual area \cite{saha}.   
