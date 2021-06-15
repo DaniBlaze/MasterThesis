@@ -11,3 +11,4 @@
 *.lof
 *.lot
 *.Rapp.history
+code/data/**/*.csv
