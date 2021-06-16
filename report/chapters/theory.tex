@@ -8,13 +8,15 @@ The hypothesis is commonly interpreted in three forms, which consist of a weak, 
 
 \indent \newline 
 Jensen's Alpha ($\alpha$) is a term within finance which was introduced in the late 1960's by Michael Jensen. The term is a post-hoc metric which evaluates a portfolio's ability to earn above-average returns adjusted for market risk. A positive Alpha means that the portfolio is able to generate a higher rate of return than the market as a whole, or some sort of benchmark index, while a negative Alpha translates to an underperforming portfolio compared to the market rate of return \cite{inproceedings}. Opposed to the more general term Alpha, Jensen's Alpha takes into consideration the capital asset pricing model (CAPM) market theory and adjusts for risk in its calculations. The formula for Jensen's Alpha is as follows:
-
+\begin{small}
+\begin{equation}
+Jensen’s \; Alpha = Portfolio \; Rate \; of \; Return - Benchmark \; Portfolio \; Rate \; of \; Return
+\end{equation}
+\end{small}
 \indent \newline 
-\textit{Jensen’s Alpha = Portfolio Rate of Return - Benchmark Portfolio Rate of Return}
-
-\indent \newline 
-\textit{Benchmark Portfolio Rate of Return} = $R_{f} + \beta (R_{m} - R_{f})$
-
+\begin{equation}
+Benchmark\;Portfolio\;Rate\;of\;Return = R_{f} + \beta (R_{m} - R_{f})
+\end{equation}
 \indent \newline 
 \textit{Where,
 \begin{itemize}
@@ -26,9 +28,10 @@ Jensen's Alpha ($\alpha$) is a term within finance which was introduced in the l
 
 \indent \newline 
 The risk free rate of return is a representation of an investment with zero risk. A common way to find the correct risk free rate of return is to subtract the inflation rate from the yield of a treasury bond, which matches the investment duration. The U.S. treasury bill is an often used measure for a risk-free rate since the broad market considers there to be zero probability of the government defaulting on their obligations \cite{chen1}. Beta is a measure of a portfolio's systematic risk, which represents the risk component that an investor is not able to avoid. It is used for measuring a stock's volatility and how much it fluctuates relatively to the rest of the market \cite{Kenton}. Beta can be found through the following calculation:
-
-\[Beta = \frac {Covariance(R_{e},R_{m})}{Variance(R_{m})}\]
-
+\indent \newline 
+\begin{equation}
+Beta = \frac {Covariance(R_{e},R_{m})}{Variance(R_{m})}
+\end{equation}
 \indent \newline 
 \textit{Where,
 \begin{itemize}
@@ -61,7 +64,7 @@ James M. Poterba conducted research on the topic in 1988 with his article titled
 The findings related to mean reversion could potentially strengthen the assumption of deep learning algorithms being able to find patterns within historical data. Based on the theory, including securities' moving averages should enable neural networks to make predictions of profitable entry- and exit price levels.  
 
 \section{Technical Analysis}
-As mentioned in the previous section, technical analysis is an investing technique that contradicts the weak form of the efficient market hypothesis. The investing strategy is a tool which tries to predict future price movements based on historical prices and other technical indicators like trends, volume, moving averages, support- and resistance levels, and momentum. While long-term investors focus more on time spent in the market, investors who use technical analysis are more focused on timing the market. The tool is used for timing profitable entry- and exit points, and it usually consists of more frequent trading.   
+As mentioned in the previous section, technical analysis is an investing technique that contradicts the weak form of the efficient market hypothesis. The investing strategy is a tool which tries to predict future price movements based on historical prices and other technical indicators such as trends, volume, moving averages, support- and resistance levels, and momentum. While long-term investors focus more on time spent in the market, investors who use technical analysis are more focused on timing the market. The tool is used for timing profitable entry- and exit points, and it usually consists of more frequent trading.   
 
 \indent \newline 
 Investtech is a Norwegian company which specializes in behavioral finance and technical analysis of stocks. They offer stock analysis based on advanced mathematical models and statistical optimization. The analyses are a result from more than 20 years of research on stocks that are listed on the Nordic stock exchanges. Their research shows supporting evidence of the ability to achieve above-average returns using technical analysis. Some of the resulting findings on various technical indicators include:
@@ -136,7 +139,6 @@ Investors (traders) who base their investing strategy on technical analysis beli
 \indent \newline 
 In order for technical analysis to work as either an investing strategy or investing tool, there must exist patterns within historical data that can be taken advantage of. If investors, through the use of technical analysis, are able to achieve above-average returns, it means that there must exist certain inefficiencies and that the weak form of the efficient market hypothesis does not hold. Instead of manually having to search for and detect these inefficiencies, this paper aims to utilize deep learning algorithms as an automated substitute for finding patterns within the data, representing potentially valuable entry points and ultimately above-average returns. Theory on deep learning is explained in the next section.          
 
-
 \section{Machine Learning}
 Modern enterprises today utilize the power of machine learning and computational power to assist every day-operations and operational decisions. Implementing analytics as an automated decision tool throughout the entire organization was previously characterized by tech-companies like Google, Amazon, Facebook etc, but in recent years this trend has changed. More and more mainstream companies are trying to replicate the success of these tech-companies by developing predictive models, visualization models, and other types of data-driven models to support operational decisions. Even though analytics and machine learning just recently has started to be recognized as a business asset, and not just a separate business project, the concepts of machine learning have been around for many years.  
 
@@ -156,8 +158,8 @@ Ever since the millennium, machine learning has been applied to several business
 Today, machine learning is considered as the computer's ability of making automated actions without being explicitly programmed. The applicability of machine learning is relevant for several business areas, which include:
 \indent \newline
 \begin{itemize}
-\item {\textbf{Self-driving vehicles} - Autonomous cars are currently being developed with the use of machine learning and deep learning. These cars have the ability to steer, accelerate and brake, based on prior knowledge, stimuli and past experiences. Prior knowledge includes street maps, the meaning of signs, what to stop for etc. Stimuli are made up of a combination of sensors like vision, lidar, radar, GPS and voice commands, while past experiences can for example be how braking and steering affects direction and speed.  where prior knowledge like street maps, meaning of signs, what to stop for etc.}
-\item {\textbf{Business decisions} - Machine learning is increasingly being used for operational decisions, which covers various business operations like predicting production metrics, the number of new customers based on marketing campaigns, or predicting inventory based on customer demand.}
+\item {\textbf{Self-driving vehicles} - Autonomous cars are currently being developed with the use of machine learning and deep learning. These cars have the ability to steer, accelerate and brake, based on prior knowledge, stimuli and past experiences. Prior knowledge includes street maps, the meaning of signs, what to stop for etc. Stimuli are made up of a combination of sensors such as vision, lidar, radar, GPS and voice commands, while past experiences can for example be how braking and steering affects direction and speed.}
+\item {\textbf{Business decisions} - Machine learning is increasingly being used for operational decisions, which covers various business operations such as predicting production metrics, the number of new customers based on marketing campaigns, or predicting inventory based on customer demand.}
 \item {\textbf{Fraud detection} -Fraud related to tax evasion, money laundering and insurance are common problems for most countries, and cost governments billions of dollars each year. By implementing machine learning and predictive models, governments are now able to prevent and detect fraud in a much more efficient way.}
 \item {\textbf{Natural language processing} - Machine learning enables Email filtering, where algorithms are able to detect spam and recognize different categories the Email belongs to. Other examples of natural language processing include smart assistants, improvement in search results where search engines are able to give relevant results based on similar search behaviour, and predictive text like autocorrect and autocomplete.}
 \end{itemize}
@@ -175,7 +177,7 @@ Artificial neural networks can be compared to biological neural networks in term
 \begin{figure}[H]
 \centering
 \includegraphics [scale=0.34,angle=360]{figures/bio.png}
-\caption{Illustration of a Neuron (source: Wikimedia Commons)}
+\caption{Illustration of a Neuron \cite{mhatre}}
 \label{fig:bio}
 \end{figure}
  
@@ -218,12 +220,12 @@ Figure 2.2 illustrates a traditional neural network, where the nodes represent a
 \indent\newline 
 Figure 2.3 shows an example of a simple neural network with an input layer consisting of two neurons and an output layer with 3 neurons. Each connection between two neurons is represented by a weight w, where each weight has indices. The first number of indices tells us the number of neurons from the connection's origin, while the second value tells us the number of neurons in the layer where the connection leads. The weights between the layers of a neural network can be illustrated through a weight matrix, which is shown below. 
 \indent\newline 
-\begin{center}
-\textit{W} = $\begin{pmatrix}
+\begin{equation}
+W = \begin{pmatrix}
 w_{11} & w_{12} & w_{13}\\
 w_{21} & w_{22} & w_{23}
-\end{pmatrix}$
-\end{center}
+\end{pmatrix}
+\end{equation}
 
 \indent\newline 
 The number of entries in a weight matrix corresponds to the number of connections between neurons. This means that the dimensions of the matrix is determined by the layers' size and their connections. The weight matrix above has two rows, since there are two neurons in the input layer and three columns because of the three neurons in the output layer \cite{opper}.
@@ -231,22 +233,19 @@ The number of entries in a weight matrix corresponds to the number of connection
 \subsection{The Learning Process}
 Having established the basic concepts and structures of a neural network, this section will look at how the network learns. Forward propagation consists of the step where the neural network performs a prediction vector based on an input feature vector \textit{x}. The prediction vector will here be termed as \textit{h}. The dot product of the weight matrix \textit{W} (explained in the previous section) and the input vector \textit{x} is then computed, which gives the vector \textit{z}.
 
-\indent\newline 
-$\overrightarrow{x}^{T} \cdot W$ = $\begin{pmatrix} x_{1}, & x_{2}
+\begin{equation}
+\overrightarrow{x}^{T} \cdot W = \begin{pmatrix} x_{1}, & x_{2}
 \end{pmatrix} \cdot \begin{pmatrix}
 w_{11} & w_{12} & w_{13}\\
 w_{21} & w_{22} & w_{23}
-\end{pmatrix}$
-  
-\indent\newline 
-= $\begin{pmatrix}
+\end{pmatrix}
+\end{equation}  
+\[= \begin{pmatrix}
 x_{1}w_{11}+x_{2}w_{21}, & x_{1}w_{12}+x_{2}w_{22}, & x_{1}w_{13}+x_{2}w_{23}
-\end{pmatrix}$
-
-\indent\newline 
-= $\begin{pmatrix}
+\end{pmatrix}\]
+\[= \begin{pmatrix}
 z_{1}, & z_{2}, & z_{3}
-\end{pmatrix}$ = $\overrightarrow{z}, \overrightarrow{h}$ = $\sigma(\overrightarrow{z})$
+\end{pmatrix} = \overrightarrow{z}, \overrightarrow{h} = \sigma(\overrightarrow{z})\]
 
 \indent\newline 
 In order to obtain the prediction vector \textit{h}, one of three non-linear activation functions is applied to the dot product vector \textit{z}. The three activation functions can be either tanh, sigmoid or ReLu, which enables a non-linear mapping from \textit{z} to \textit{h}. This allows the network to understand non-linear data through the linear combination value of the weights and neurons and the non-linear activation function.
@@ -260,9 +259,9 @@ Two of the most common loss functions implemented in deep learning are the mean 
 \indent\newline 
 \textbf{Mean squared error loss:}
 
-\indent\newline 
-$L(\theta) = \frac{1}{N} \sum_{i=0}^{N} (y_{i} - \widehat{y}_{i})^{2}$
-
+\begin{equation}
+L(\theta) = \frac{1}{N} \sum_{i=0}^{N} (y_{i} - \widehat{y}_{i})^{2}
+\end{equation}
 \indent\newline 
 Where,
 \indent\newline 
@@ -270,12 +269,13 @@ $y_{i}$ = entries in the prediction vector $\overrightarrow{y}$
 \indent\newline 
 $\widehat{y_{i}}$ = entries in the ground truth label $\widehat{\overrightarrow{y}}$
 
+
 \indent\newline 
 \textbf{Cross-Entropy Loss:}
 
-\indent\newline 
-$L(\theta) = - \sum_{i=0}^{N} \widehat{y_{i}} \cdot log(y_{i})$
-
+\begin{equation}
+L(\theta) = - \sum_{i=0}^{N} \widehat{y_{i}} \cdot log(y_{i})
+\end{equation}
 \indent\newline 
 Where,
 \indent\newline 
@@ -300,14 +300,16 @@ Minimizing the loss function is solved mathematically by the method termed gradi
 \indent\newline 
 The x-axis in figure 2.4 is the value of the weight, while the y-axis is the difference between the ground truth and the prediction, and essentially the network parameters (the value of the loss function). Using a quadratic loss function means that there is only a global minimum and not a local minimum. The global minimum represents the value of the weight that enables the network to make an accurate prediction, and is shown in the figure as the point where the loss function is equal to zero. In the fictive example shown in the figure, the initial prediction and weight value is relatively inaccurate. To improve the accuracy of the prediction, the next step involves updating the weight parameter until it reaches an optimized value for the weight. This is carried out by taking the derivative of the loss function with respect to the weight \textit{w}.
 
-\indent\newline
-$\nabla_{w11} L(w_{11}) = \frac{\partial L(w_{11})}{\partial w_{11})}$
+\begin{equation}
+\nabla_{w11} L(w_{11}) = \frac{\partial L(w_{11})}{\partial w_{11})}
+\end{equation}
 
 \indent\newline
 The equation computes the tangent (slope) of the loss function for the point of where the initial weight lies. The figure shows that the tangent of the loss function would be positive, which would correspond to the network updating the weights to a higher loss value and making even more inaccurate predictions. However, this can be solved by multiplying the gradient by minus one to get the opposite direction of the gradient.  
 
-\indent\newline
-$w_{11_{new}} = w_{11_{old}} - \epsilon \cdot \nabla_{w11} L(w_{11})$
+\begin{equation}
+w_{11_{new}} = w_{11_{old}} - \epsilon \cdot \nabla_{w11} L(w_{11})
+\end{equation}
 
 \indent\newline
 The equation above shows a step of the gradient descent where the network updates the value of the weight to make a more accurate prediction. In the equation, epsilon is implemented as the network’s learning rate and represents how quickly the parameters are updated. This method of updating the parameters continues until the loss function reaches a point of global minimum, which represents the optimal weight value for the network to perform accurate predictions \cite{opper}.  
@@ -332,7 +334,7 @@ A limitation with simple RNNs is their ability to retain previous learnt informa
 \begin{figure}[H]
 \centering
 \includegraphics [scale=0.40,angle=360]{figures/lstm.png}
-\caption{Structure of a LSTM-Network (source: \cite{olah})}
+\caption{Structure of a LSTM-Network \cite{olah}}
 \label{fig:lstm}
 \end{figure}
 
@@ -343,39 +345,45 @@ Figure 2.6 illustrates the recurrent system of an LSTM. The yellow boxes represe
 \begin{figure}[H]
 \centering
 \includegraphics [scale=0.40,angle=360]{figures/module.png}
-\caption{The Repeating Module (source: \cite{olah})}
+\caption{The Repeating Module \cite{olah}}
 \label{fig:module}
 \end{figure}
 
 \indent\newline 
 One of the main differences between a simple RNN and an LSTM is the repeating module. A standard RNN only has a single neural network layer, while an LSTM has four interacting neural network layers. The horizontal line running through figure 2.7 illustrates the cell state $C_{t}$. This represents the flow of information through the network chain. In order for the LSTM to regulate the information being passed through, three different types of gates are used. The gates are made up of a neural network layer and a pointwise multiplication operation, and consist of a forget gate $f_{t}$, an input gate $i_{t}$, and an output gate $o_{t}$ \cite{olah}. The forget gate is a sigmoid layer that decides which parts of the information to forget. $f_{t}$ outputs a value between 1 and 0 for each number in the cell state $C_{t-1}$ by evaluating $h_{t-1}$ and $x_{t}$, where a value of 1 means keeping all of the information and a value of 0 means forgetting all of the information:
 
-\indent\newline 
-$f_{t} = \sigma(W_{f} \cdot[h_{t-1},x_{t}] + b_{f})$
+\begin{equation}
+f_{t} = \sigma(W_{f} \cdot[h_{t-1},x_{t}] + b_{f})
+\end{equation} 
 
 \indent\newline 
 The next two parts of the LSTM decide what new information to be stored in the cell state. The first part consists of an input gate where a sigmoid layer decides which values to update\cite{olah}. Then, a vector of new candidate values Ct are created by a tahn layer, which represents potential values to be added to the state:
 
-\indent\newline 
-$i_{t} = \sigma(W_{f} \cdot[h_{t-1},x_{t}] + b_{i})$
+\begin{equation}
+i_{t} = \sigma(W_{f} \cdot[h_{t-1},x_{t}] + b_{i})
+\end{equation}
 
-\indent\newline 
-$\tilde{C_{t}} = tanh(W_{C} \cdot[h_{t-1},x_{t}] + b_{C})$
+\begin{equation}
+\tilde{C_{t}} = tanh(W_{C} \cdot[h_{t-1},x_{t}] + b_{C})
+\end{equation}
 
 \indent\newline 
 Having determined the information to forget and keep from memory, how much information that will be added to the memory, and candidate values to be added, the next step involves updating the cell state:
 
-\indent\newline 
-$C_{t} = f_{t} \ast C_{t-1} + i_{t} \ast \tilde{C_{t}}$
+\begin{equation}
+C_{t} = f_{t} \ast C_{t-1} + i_{t} \ast \tilde{C_{t}}
+\end{equation}
 
 \indent\newline 
 The old state is multiplied with the forget gate layer $f_{t}$, while the new, scaled candidate values $i_{t}*\tilde{C_{t}}$ are added. The final step is for the LSTM to decide on the output. A sigmoid layer determines which parts of the cell state to output, before the cell state runs through a tanh layer in order to transform the values into values between -1 and 1 \cite{olah}: 
 
-\indent\newline 
-$o_{t} = \sigma(W_{o} \cdot[h_{t-1},x_{t}] + b_{o})$
+\begin{equation}
+o_{t} = \sigma(W_{o} \cdot[h_{t-1},x_{t}] + b_{o})
+\end{equation}
 
-\indent\newline 
-$h_{t} = o_{t} * tanh(C_{t})$
+\begin{equation}
+h_{t} = o_{t} * tanh(C_{t})
+\end{equation}
 
 \subsection{GRU}
 The Gated Recurrent Unit (GRU) is a variation of an RNN and an LSTM network. Compared to LSTM, the GRU is a more simple model where the forget and input gates are combined into an update gate, as well as having merged the cell state and hidden state \cite{olah}. 
@@ -384,33 +392,37 @@ The Gated Recurrent Unit (GRU) is a variation of an RNN and an LSTM network. Com
 \begin{figure}[H]
 \centering
 \includegraphics [scale=0.40,angle=360]{figures/gru.png}
-\caption{Structure of a Gated Recurrent unit (source: \cite{olah})}
+\caption{Structure of a Gated Recurrent unit \cite{olah}}
 \label{fig:gru}
 \end{figure}
 
 \indent\newline 
 In the update gate, $x_{t}$ is plugged into the network unit and multiplied by the weight $W_{z}$. $h_{t-1}$ holds previous information and is also multiplied by its weight $U_{z}$. Further, a sigmoid activation transforms the result into a value between 0 and 1 \cite{kosta}:
 
-\indent\newline 
-$z_{t} = \sigma(W_{z} x_{t} + U_{z} h_{t-1})$
+\begin{equation}
+z_{t} = \sigma(W_{z} x_{t} + U_{z} h_{t-1})
+\end{equation}
 
 \indent\newline 
 Similar to the LSTM, in this step the GRU determines which parts of the past information to pass along in the structure, where a value of 1 means copying all of the past information and a value of 0 means keeping none of the information. Further, the reset gate is used to determine which parts of the information to forget. The same logic of the update gate applies to the reset gate:
 
-\indent\newline 
-$r_{t} = \sigma(W_{r} x_{t} + U_{r} h_{t-1})$
+\begin{equation}
+r_{t} = \sigma(W_{r} x_{t} + U_{r} h_{t-1})
+\end{equation}
 
 \indent\newline 
 The next step of the process is introducing a memory content, in order for the network to be able to utilize the reset gate to store relevant information from the past \cite{kosta}:
 
-\indent\newline 
-$\tilde{h_{t}} = tanh(W_{x_{t}} + r_{t} * U_{h-1})$
+\begin{equation}
+\tilde{h_{t}} = tanh(W_{x_{t}} + r_{t} * U_{h-1})
+\end{equation}
 
 \indent\newline 
 The equation allows the model to determine what to remove from previous learned information, before applying the nonlinear activation function tanh, to transform the results into values between -1 and 1. The last step of the GRU is using the update gate to decide what information to collect from the current memory content $\tilde{h_{t}}$ and the previous steps $h_{t-1}$ \cite{kosta}. In order to do so, the model calculates $h_{t}$, which is a vector with information for the current unit and with a function of passing the information down in the network structure:
 
-\indent\newline 
-$h_{t} = z_{t} * h_{t-1} + (1 - z_{t}) * \tilde{h_{t}}$
+\begin{equation}
+h_{t} = z_{t} * h_{t-1} + (1 - z_{t}) * \tilde{h_{t}}
+\end{equation}
 
 \subsection{CNN}
 Convolutional neural networks (CNNs) is a type of feedforward neural network commonly used for image recognition and object classification. The structure of a CNN can be compared to the neurons in the human brain, where individual neurons respond to stimuli in several Receptive Fields (parts of the visual field) that overlap each other to cover the entire visual area \cite{saha}.   
@@ -419,7 +431,7 @@ Convolutional neural networks (CNNs) is a type of feedforward neural network com
 \begin{figure}[H]
 \centering
 \includegraphics [scale=0.34,angle=360]{figures/cnn.png}
-\caption{Structure of a CNN (source: \cite{zakka})}
+\caption{Structure of a CNN \cite{zakka}}
 \label{fig:cnn}
 \end{figure}
 
@@ -471,10 +483,10 @@ A common way of backtesting deep learning trading algorithms is only including d
 The market capitalization of a stock, also frequently mentioned as market cap, is the total market value of a company. It is a measure based on a company's worth in the open market and can be found by multiplying the number of outstanding shares with the last traded share price. How the open market determines a company's market cap is dependent on several factors. A common misconception is that it measures equity. The market evaluation of a company's total value is dependent on several factors. One of the most important factors is the company's ability to generate cash flow. This includes the ability of generating cash flow both in present time and in the future. The market expectation of a company's ability to generate future cash flow is one of the main reasons why a company sometimes can be either overvalued or undervalued. These situations of incorrect short-term evaluation create opportunities of possible profitable trades, which could potentially be exploited by deep learning algorithms.  
 
 \subsection{Large Cap Stocks}
-Stocks reviewed as large cap companies are big, solid companies with a stable positive cash flow, often associated with low risk. These stocks are referred to as blue chips, which originates from casinos where blue chips are the most valuable. Blue chips are often associated with solid earnings, low level of debt ratio and frequent cash dividends. Large cap stocks are often preferred by investors seeking a low level of risk, high volume of traded shares, and expectations of small fluctuations (low volatility) in share price. The Oslo Stock Exchange (OSE) is a smaller stock exchange which means that the classification of large cap stocks differ from larger stock exchanges such as S\&P 500, Dow Jones and Nasdaq in the US. These typically classify companies with a market capitalization of minimum 10 billion dollars as large cap stocks, while at the Oslo Stock Exchange this boundary is set to a market cap above 15 billion NOK (approximately 1.8 billion dollars). 
+Stocks reviewed as large cap companies are big, solid companies with a stable positive cash flow, often associated with low risk. These stocks are referred to as blue chips, which originates from casinos where blue chips are the most valuable. Blue chips are often associated with solid earnings, low level of debt ratio and frequent cash dividends. Large cap stocks are often preferred by investors seeking a low level of risk, high volume of traded shares, and expectations of small fluctuations (low volatility) in share price. The Oslo Stock Exchange (OSE) is a smaller stock exchange which means that the classification of large cap stocks differ from larger stock exchanges such as S\&P 500, Dow Jones and Nasdaq in the US. These typically classify companies with a market capitalization of minimum 10 billion dollars as large cap stocks, while at the Oslo Stock Exchange this boundary is set to a market cap above 10-15 billion NOK (approximately 1.2-1.8 billion dollars). 
 
 \subsection{Small Cap Stocks}
-Companies regarded as small cap stocks are small, young companies, where a stable positive cash flow is not expected until several years down the line. The share prices tend to be more volatile with less liquidity than mature companies.These types of companies are often expected to experience significant growth in future years, which makes them difficult to evaluate. Because a positive net cash flow is not expected before many years, investing in these companies brings increased risk. Small caps are therefore often subject to speculations, where the share price can fluctuate greatly, based on changes in the company outlook and in periods of economic slowdowns. The stock exchanges in the US regard companies with a market cap below 2 billion dollars as small cap stocks, while the Oslo Stock Exchange regards companies with a market cap below 1 billion NOK (approximately 120 million dollars) as small cap stocks.   
+Companies regarded as small cap stocks are small, young companies, where a stable positive cash flow is not expected until several years down the line. The share prices tend to be more volatile with less liquidity than mature companies.These types of companies are often expected to experience significant growth in future years, which makes them difficult to evaluate. Because a positive net cash flow is not expected before many years, investing in these companies brings increased risk. Small caps are therefore often subject to speculations, where the share price can fluctuate greatly, based on changes in the company outlook and in periods of economic slowdowns. The stock exchanges in the US regard companies with a market cap below 2 billion dollars as small cap stocks, while the Norwegian market regards companies with a market cap below 1-3 billion NOK (approximately 120-360 million dollars) as small cap stocks.   
 
 \indent\newline   
 Comparing historical returns favours investing in small caps stocks over large cap stocks. In the period from 1997 to 2012 the small cap index Russel 2000 had an annual return of 8.6\%, while the S\&P 500 had an annual return of 4.8\% \cite{segal}. On the other hand, the small cap index had one-third higher volatility compared to the S\&P 500. Comparing small cap funds with large cap funds in the period 2003-2013 showed a standard deviation (volatility measure) of 19.28 for small cap funds and 15.54 for large cap funds. A higher volatility translates into higher risk, which can make it difficult for investors, who have a limited number of stocks in their portfolio, to capitalize from investing in small cap stocks.  

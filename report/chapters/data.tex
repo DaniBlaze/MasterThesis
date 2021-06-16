@@ -1,19 +1,30 @@
-The market data on both constituents on the Oslo Stock Exchange Benchmark Index (OSEBX) and the Oslo Stock Exchange Small Cap Index (OSESX) are scraped from Yahoo Finance, using the library \textit{yfinance}. 
-
+Market data on all stocks listed on the Oslo Stock Exchange as of 2021 are scraped from Yahoo Finance, using the Python library $\textit{yfinance}$ and each stock's unique ticker. This main data set is scraped using a max function in yfinance, which gives the maximum available historical data on each stock. The scraped data set provides data on daily dividend-adjusted closing share prices and daily traded volume for each stock. Further, market capitalization data is downloaded from Oslo Børs, which includes each stock's market capitalization at the end of the year in the period from 2003 until 2020. This is later used for separating small cap stocks from large cap stocks, and ultimately creating two different data sets based on a market cap threshold. Additional independent variables such as the VIX, Brent oil price, 10-year US treasury rate, and the USD/NOK foreign exchange rate are scraped individually from Yahoo Finance, where they are later merged with the two data sets.  
 \indent\newline 
 \begin{figure}[H]
 \centering
 \includegraphics [scale=0.44,angle=360]{figures/smallsector.png}
-\caption{OSESX Sector Allocation (source: \cite{euronext}}
+\caption{OSESX Sector Allocation \cite{euronext}}
 \label{fig:smallsector}
 \end{figure}
+\indent\newline 
+Figure 3.1 shows the sector allocation of the small cap index as of 2021. The Index is dominated by marine transportation- and oil equipment and services companies, which accounts for approximately 25\% of the total index market cap. The smallest sectors consist of offshore drilling and airlines, and accounts for less than 2\% respectively of the total market cap.   
 
 \indent\newline 
 \begin{figure}[H]
 \centering
 \includegraphics [scale=0.44,angle=360]{figures/largesector.png}
-\caption{OSEBX Sector Allocation (source: \cite{bors}}
+\caption{OSEBX Sector Allocation \cite{bors}}
 \label{fig:largesector}
 \end{figure}
+\indent\newline 
+Figure 3.2 illustrates the current sector allocation of the OSEBX index, mainly consisting of large cap stocks. The top three sectors are banks, integrated oil and gas, and farming, fishing, ranching and plantations, which represent approximately 38\% of the index total market cap. The bottom three sectors are specialty chemicals, construction, and marine transportation, where each sector makes up less than 2\% of the index.  
+
+\section{Software and Hardware}  
+Data collection, data preparation and model development is conducted in Python 3.9, using Visual Studio as an integrated development environment (IDE). The models are developed with the library TensorFlow and with packages Keras and Scikit-learn. The deep learning models require a high level of computing power intensity, and to overcome this issue, they are trained and tested on GPU's provided by Google Cloud Platform.  
+
+
+
+
+
 
 
