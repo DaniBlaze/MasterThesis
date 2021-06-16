@@ -11,11 +11,11 @@ with file_path.open() as dataset_file:
     df_scraped.reset_index(inplace=True, drop=True)
 
 def get_large_cap(df):
-    large_query = np.where((df["MarketCap"] >= 6000000.0) & (df["Year"] >= 2012))
+    large_query = np.where((df["MarketCap"] >= 6000000.0) & (df["Year"] >= 2010))
     return df.loc[large_query]
 
 def get_small_cap(df):
-    large_query = np.where((df["MarketCap"] <= 3000000.0) & (df["Year"] >= 2012))
+    large_query = np.where((df["MarketCap"] <= 3000000.0) & (df["Year"] >= 2010))
     return df.loc[large_query]
 
 def get_target(stock_return, median):
