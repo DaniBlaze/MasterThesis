@@ -12,3 +12,8 @@
 *.lot
 *.Rapp.history
 code/data/**/*.csv
+code/network/**/*.csv
+code/network/checkpoint
+*.data*
+*.index
+*.meta
