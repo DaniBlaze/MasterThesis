@@ -17,3 +17,5 @@ code/network/checkpoint
 *.data*
 *.index
 *.meta
+*.vscode
+code/backtesting/**/*.csv
