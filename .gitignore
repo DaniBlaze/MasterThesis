@@ -11,11 +11,9 @@
 *.lof
 *.lot
 *.Rapp.history
-code/data/**/*.csv
-code/network/**/*.csv
-code/network/checkpoint
+code/**/*.csv
+*checkpoint
 *.data*
 *.index
 *.meta
 *.vscode
-code/backtesting/**/*.csv
