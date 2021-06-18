@@ -1,0 +1,26 @@
+\section{Overview}
+This chapter presents the resulting findings from training and testing the recurrent neural networks, and the results from applying the predictive models to the suggested portfolio strategies. The second section presents an analysis of predictive performance when applied to small cap and large cap stock returns. Section three presents an analysis on financial results from implementing the different portfolio strategies, where portfolio performance is measured before transaction costs. Portfolio performance after transaction costs is discussed on the basis of previous research, where only costs related to broker commissions is included in the backtesting. Arrival costs, lending fees for short-selling, and implementation shortfall is not simulated. However, by using average costs found in previous research, these transactions costs are discussed to compare portfolio performance before and after transaction costs, and to the best of the ability highlight how the models perform when applied to a real-life trading environment. Lastly, portfolio performance is compared with the returns of the small cap index OSESX and the benchmark index OSEBX, giving suitable reference measures to assess whether or not recurrent neural networks can be used as a supplementary tool for consistently achieving excess returns. 
+
+\indent\newline
+The listed models below are the selected RNNs for predicting the probability of a stock outperforming the cross-sectional median return the next day (t+1):
+
+\indent \newline
+\begin{itemize}
+\item {\textbf{LSTM1:} This is the network which trains individually on each stock, with only one input feature of the previous 240 stock returns.} 
+\item {\textbf{LSTM2:} This is the network which trains on all stocks simultaneously, with only one input feature of the previous 240 stock returns.}  
+\item {\textbf{LSTM3:} This is the network which also trains on all stocks simultaneously, but an extra LSTM-layer is included in the network structure. It trains on only one input feature, which is the previous 240 stock returns.}
+\item {\textbf{LSTM4:} The last LSTM-variation trains on all stocks simultaneously with additional input features of the VIX, brent-crude oil price, US 10-years treasury yield, USD/NOK exchange rate, and technical indicators consisting of 50- and 200 days moving averages.}
+\end{itemize}    
+
+\section{Predictive Performance}
+\subsection{Small Cap}
+\subsection{Large Cap}
+
+\section{Portfolio Performance Before Transaction Costs}
+
+\section{Portfolio Performance After Transaction Costs}
+
+\section{Small Cap and Benchmarks}
+
+
+

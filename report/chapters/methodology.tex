@@ -1,7 +1,7 @@
 The following chapter elaborates on the methods and techniques used to compare the returns of applying deep learning algorithms to small cap- and large cap stock predictions. It presents a variety of deep learning models used for predicting returns for both large cap and small cap stocks on the Oslo Stock Exchange. The aim of the research is to evaluate if the excess returns of investing in small caps can be capitalized on, through deep learning algorithms being able to detect patterns and relationships within historical data and by making accurate predictions of the probability of future share price development. An important part of a research process is choosing the appropriate method and research design to correctly analyze information and data on the topic, as well as for others to be able to assess the reliability and validity of the paper. 
 
 \indent\newline
-The methodology and techniques used in this paper is inspired by the work of Krauss et al. and Lund et al. \cite{krauss} \cite{lund}. This means that a similar approach and framework for developing the algorithms and assessing the models' predictive performance is applied to predicting small cap stock returns and comparing them with large cap stock returns. In addition to exploring the models' applicability to small cap stock returns, the paper will add on previous work in terms of implementing a gated recurrent unit (GRU) and a convolutional neural network (CNN).   
+The methodology and techniques used in this paper is inspired by the work of Krauss et al. and Lund et al. \cite{krauss} \cite{lund}. This means that a similar approach and framework for developing the algorithms and assessing the models' predictive performance is applied to predicting small cap stock returns and comparing them with large cap stock returns. In addition to exploring the models' applicability to small cap stock trading, the paper will add on previous work in terms of implementing a gated recurrent unit (GRU) and a convolutional neural network (CNN).   
 
 \indent\newline
 The methodology can be decomposed into six sections, where the first section starts by presenting how the networks are trained and tested. Section two first elaborates on the main independent variable included for explaining the variability of stock returns, before presenting the different independent features that are included, with the aim of improving model performance. The section also explains the procedure of creating the target output. Section three gives an overview of the selected models for predicting small- and large cap stock returns. Further, section four introduces metrics used for evaluating predictive performance and portfolio performance, while section five describes the different portfolio strategies that are incorporated, in order to simulate how the network predictions can be utilized for real-life trading. Lastly, section six gives an overview of the different hyperparameters and their respective values for each model.
@@ -62,7 +62,7 @@ NPV = \sum_{t=1}^{n} \frac{R_{t}}{(1 + i)^{t}}
 \indent\newline
 The equation above shows the formula for calculating the NPV, where $R_{t}$ is the expected net cash flow in a single time period $\textit{t}$, $\textit{i}$ is the discount rate which is based on potential returns from alternative investments, and $\textit{t}$ is the number of time periods. When investors decide on which discount rate to include in their analysis, they evaluate other returns from alternative investments. The 10-year treasury yield is a measure of a risk free rate and an alternative investment, and therefore affects the discount rate. E.g. if the risk free rate goes up, the discount rate also goes up and vice versa. A higher discount rate means that the present value of (especially) small cap stocks' future positive cash flow is negatively affected, since the positive cash flows are not expected until several years into the future. The 10-year US treasury rate should therefore, to a certain degree, explain the variability in small cap stocks' share price. Small cap stocks also tend to be more volatile than large cap stocks, which give reason to believe that the VIX could be a suitable input feature to include when predicting small cap stock returns. 
 
-\section{Networks Variation}
+\section{Network Variations}
 The following models and network-variations are included with the aim of discovering the most suitable models for predicting small cap stock returns, in order to take advantage of the excess returns that comes with this group of stocks:
 
 \indent \newline
@@ -71,6 +71,7 @@ The following models and network-variations are included with the aim of discove
 \item {\textbf{LSTM all stocks:} The network trains on all stocks simultaneously with only one input feature, which consists of sequences of the last 240 stock returns. This network does not learn patterns and relationships within the data for each stock, but common relationships for all stocks.} 
 \item {\textbf{LSTM stacked:} As apposed to the two previous, more basic models, this model has a network structure with two LSTM layers, which can potentially enable the network to discover deeper patterns within the data. The model trains on only the previous mentioned input feature.}
 \item {\textbf{LSTM extra input features:} The last LSTM-variation follows the same principles as the LSTM trained on individual stocks, but it trains on data with additional input features. The reasoning behind including extra input features is to help the model explain the variability in stock returns.}
+\item {\textbf{GRU all stocks:}}
 \end{itemize}
 
 \section{Evaluation Metrics}
@@ -94,12 +95,11 @@ The next metric is quite similar to the previous one, but instead of measuring t
 
 \indent\newline
 \begin{equation}
-PA = \frac{CPP}{TPP}
+Presicion = \frac{CPP}{TPP}
 \end{equation}
 \indent \newline 
 \textit{Where,
 \begin{itemize}
-	\item[] $PA$ = Positive accuracy
     \item[] $CPP$ = Correct positive predictions
     \item[] $TPP$ = Total positive predictions
 \end{itemize}
@@ -121,16 +121,16 @@ Recall = \frac{CPP}{TPO}
 }
 
 \indent \newline 
-The next metric is the F-score. It uses the positive accuracy and recall to measure the networks' predictive accuracy in terms of robustness:
+The next metric is the F1-score. It uses the positive accuracy and recall to measure the networks' predictive accuracy in terms of robustness:
 
 \indent\newline
 \begin{equation}
-F-Score = \frac{PA * Recall}{PA + Recall}
+F1-Score = \frac{P * Recall}{P + Recall}
 \end{equation}
 \indent \newline 
 \textit{Where,
 \begin{itemize}
-    \item[] $PA$ = Positive accuracy
+    \item[] $P$ = Precision
 \end{itemize}
 }
 
@@ -152,7 +152,7 @@ BCE = \frac{1}{N} \sum^{N}_{n=0} (y_{n}log[p_{n}] + (1 - y_{n})log[1 - p_{n}])
 }
 
 \subsection{Trading}
-Multiple financial metrics are used for evaluating the trading performance of each network. These include annualized returns, standard deviation, Sharpe ratio, max drawdown, and value at risk (VaR). The chosen metrics capture both the returns from trading while also highlighting the risk associated with each model and strategy.
+Multiple financial metrics are used for evaluating the trading performance of each network. These include annualized returns, standard deviation, Sharpe ratio, max drawdown, and value at risk (VaR). The chosen metrics capture both the returns from trading while also highlighting the risk associated with each model and strategy. Lastly, Jensen's Alpha (discussed in chapter two) is implemented as a measure for comparing small cap returns with large cap returns, as well as the small cap index OSESX and the Benchmark index OSEBX.  
 
 \indent \newline 
 The Sharpe ratio is a measure which highlights the level of risk compared to returns. It is a ratio of average return earned in excess of the risk-free rate per unit of total risk or volatility \cite{fernando}. When analyzing the returns from trading in small caps and large caps, It is important to balance the results by not only comparing returns between the groups, but also the level of portfolio risk. Sharpe ratio is calculated in the following way:
@@ -191,18 +191,20 @@ $PV$ = Peak value
 \indent \newline
 Lastly, the value at risk (VaR) measures potential losses in a portfolio and their occurrence ratio. Volatility by itself is not a sufficient measure, as it does not differentiate between stocks with small fluctuations downwards in share price, but large fluctuations up in share price and vice versa. VaR addresses this issue by quantifying the risk of potential downside in a given stock. It is specifically directed towards the chance of experiencing big losses.  
 
+\section{Benchmarks}
+To be able to adequately assess and evaluate the application of the proposed models to small cap trading, it requires having suitable points of references. The models' training, testing and predictions on large cap stock returns serves as benchmarks for the models and strategies applied to predicting small cap stock returns. Hence, each model and trading strategy is tested on both groups of stocks for comparison reasons. Most investors compare their portfolio returns with other diversified "portfolios" such as indices, in order to evaluate portfolio performance. Following this approach for evaluating portfolio performance, the returns of the small cap index OSESX and the benchmark index OSEBX in the corresponding periods are also incorporated as benchmark measures.  
+
 \section{Strategies}
 The models predict the probability $\widehat{\mathcal{P}}^{s}_{t+1|t}$ of a stock outperforming or underperforming the cross-sectional median return, where the models only use information up until time $\textit{t}$. For each period $\textit{t+1}$, the stocks are ranked in descending order based on their respective probability. The top of the ranking corresponds to the stocks the models evaluate as undervalued with expectations to outperform the cross-sectional median return, and is the basis for which stocks to buy. The bottom of the ranking corresponds to the stocks the models evaluate as overvalued with expectations of underperforming the cross-sectional median return, and dictates which stocks to short. This approach makes for several different portfolio strategies, where the models are instructed to buy (short) $\textit{K}$ stocks. The following portfolio strategies are selected:
 
 \indent \newline
 \begin{itemize}
-\item {\textbf{Long-only portfolio:} The strategy involves being only long in $\textit{K}$ stocks. This means that shorting is not allowed. Two long-only portfolios are selected, where one is instructed to hold five stocks at any given time (K=5), and the other is instructed to hold ten stocks (K=10).} 
+\item {\textbf{Long-only portfolio:} The strategy involves being only long in $\textit{K}$ stocks. This means that shorting is not allowed. Two long-only portfolios are selected, where one is instructed to hold five stocks at any given time (K=5), and the other is instructed to hold two stocks (K=2).} 
 \item {\textbf{Long-short portfolio:} This strategy replicates a common portfolio for professional investors. The strategy allows for going both long and short. The models are instructed to create a portfolio consisting of being long five stocks and being short five stocks (2K, K=5) at any given point.}
 \item {\textbf{Short-only portfolio:} The last strategy involves an unconventional trading approach, by only allowing for short-selling. The models create a portfolio of the most overvalued stocks (based on the probability of underperforming the cross-sectional median return) and are instructed to hold five short positions at any given time (K=5).}
 \end{itemize}  
 
 \indent \newline
-
-
+The main portfolio strategy applied to every model is the long-only portfolio with K=5. The other strategies are only applied to the LSTM network that is trained on all stocks, with a single independent input feature of the previous 240 stock returns. All models and portfolio strategies are first assessed and evaluated without taking into account transaction costs, before including explicit transaction costs in the form of broker commissions. Transaction costs related to securities lending for short-selling and the implicit costs of the bid-ask spread (arrival costs) are not included in the backtesting. However, these costs are discussed on the basis of previous research, in order to give an overall assessment of how the different models and strategies perform when applied to real-life trading. An assumption for each model and portfolio strategy is that 100\% of the capital is invested at all times during the trading period. Bet sizing is simplified by using equal-weighted portfolios, which means that the amount of capital invested in each stock is equal for all stocks the models suggest to invest in. 
 
 \section{Hyperparameters}
