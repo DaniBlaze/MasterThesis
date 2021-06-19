@@ -30,7 +30,6 @@ data = pd.read_csv('prediction/large_cap_predictions.csv',index_col = 0)
 data['y_pred'] = data['y_prob'].apply(classification)
 data = data.sort_values(['Date','y_prob'],ascending = True)
 date_list = list(data.Date.unique())
-print(date_list)
 data = data[['Date','Ticker','y_prob','y_pred','y_true']]
 data = data.reset_index(drop = True)
 # Overall accuracy of LSTM model
