@@ -6,6 +6,9 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import cohen_kappa_score
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import confusion_matrix
+import keras
+from keras import backend
+from keras.losses import binary_crossentropy
 
 def count_accu(K,df):
     count = 0
@@ -65,4 +68,12 @@ auc = roc_auc_score(y_pred, y_prob)
 print('ROC AUC: %f' % auc)
 # confusion matrix
 matrix = confusion_matrix(y_pred, y_true)
+print('Confusion matrix:')
 print(matrix)
+
+# convert to keras variables
+keras_y_true = backend.variable(y_true)
+keras_y_prob = backend.variable(y_prob)
+# calculate the average cross-entropy
+mean_ce = backend.eval(binary_crossentropy(keras_y_true, keras_y_prob))
+print('Average Cross Entropy: %.3f nats' % mean_ce)

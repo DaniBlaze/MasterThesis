@@ -7,7 +7,8 @@ for m in range(years):
     file_path = path.Path(__file__).parent / 'study_period/'+str(file_prefix)+'_study_period_'+str(m)+'.csv'
     with file_path.open() as dataset_file:
         data_input = pd.read_csv(dataset_file)
-    data_input = data_input[['Date', 'Ticker', 'Normalized_Returns', 'Target']]
+    data_input = data_input[['Date', 'Ticker', 'Normalized_Returns', 'Normalized_Volume', 'Normalized_VIX', 
+                            'Normalized_BZ=F', 'Normalized_TNX', 'Normalized_NOK=X', 'Normalized_Avg_50', 'Normalized_Avg_200', 'Target']]
     data_input = data_input.sort_values(['Date','Ticker'], ascending = True)
     unique_dates = list(data_input.Date.unique())
     tickers = list(data_input.Ticker.unique())
@@ -30,7 +31,7 @@ for m in range(years):
                 ticker_date_data = ticker_date_data.drop(['Date','Ticker','Target'],axis = 0)
                 ticker_date_data = ticker_date_data.iloc[:,0:-1]
                 ticker_date_data = ticker_date_data.stack().to_frame().T
-                ticker_date_data.columns = range(240)
+                ticker_date_data.columns = range(1920)
 
                 ticker_date_data['target'] = target
                 ticker_date_data['ticker'] = ticker_name
@@ -58,7 +59,7 @@ for m in range(years):
                 ticker_date_data = ticker_date_data.drop(['Date','Ticker','Target'],axis = 0)
                 ticker_date_data = ticker_date_data.iloc[:,0:-1]
                 ticker_date_data = ticker_date_data.stack().to_frame().T
-                ticker_date_data.columns = range(240)
+                ticker_date_data.columns = range(1920)
 
                 ticker_date_data['target'] = target
                 ticker_date_data['ticker'] = ticker_name

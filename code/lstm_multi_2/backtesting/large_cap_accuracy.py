@@ -26,7 +26,7 @@ def classification(y):
     else:
         return 0
      
-data = pd.read_csv('prediction/large_cap_predictions.csv',index_col = 0)
+data = pd.read_csv('prediction/large_cap_predictions_25.csv',index_col = 0)
 data['y_pred'] = data['y_prob'].apply(classification)
 data = data.sort_values(['Date','y_prob'],ascending = True)
 date_list = list(data.Date.unique())
