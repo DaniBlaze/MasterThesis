@@ -41,17 +41,20 @@ def RNN(x, weights, biases):
     # Unstack to get a list of 'timesteps' tensors of shape (batch_size, num_input)
     x = tf.unstack(x, timesteps, 1)
 
-    # Define a lstm cell with tensorflow
+      # Define a lstm cell with tensorflow
     lstm_cell_one = rnn.BasicLSTMCell(num_hidden, forget_bias=0.8)
     lstm_cell_two = rnn.BasicLSTMCell(num_hidden, forget_bias=0.8)
+    lstm_cell_three = rnn.BasicLSTMCell(num_hidden, forget_bias=0.8)
 
     # Apply the Dropout
     lstm_cell_one = tf.nn.rnn_cell.DropoutWrapper(lstm_cell_one, input_keep_prob=1.0, output_keep_prob=1.0 - dropout,
                                               state_keep_prob=1.0 - dropout)
     lstm_cell_two = tf.nn.rnn_cell.DropoutWrapper(lstm_cell_two, input_keep_prob=1.0, output_keep_prob=1.0 - dropout,
                                               state_keep_prob=1.0 - dropout)
+    lstm_cell_three = tf.nn.rnn_cell.DropoutWrapper(lstm_cell_three, input_keep_prob=1.0, output_keep_prob=1.0 - dropout,
+                                              state_keep_prob=1.0 - dropout)
 
-    multi_cell = tf.contrib.rnn.MultiRNNCell([lstm_cell_one, lstm_cell_two])
+    multi_cell = tf.contrib.rnn.MultiRNNCell([lstm_cell_one, lstm_cell_two, lstm_cell_three])
 
     # Get lstm cell output
     outputs, states = rnn.static_rnn(multi_cell, x, dtype=tf.float32)
