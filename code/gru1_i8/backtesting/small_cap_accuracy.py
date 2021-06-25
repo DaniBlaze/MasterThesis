@@ -26,7 +26,7 @@ def classification(y):
     else:
         return 0
      
-data = pd.read_csv('prediction/large_cap_predictions.csv',index_col = 0)
+data = pd.read_csv('prediction/small_cap_predictions.csv',index_col = 0)
 data['y_pred'] = data['y_prob'].apply(classification)
 data = data.sort_values(['Date','y_prob'],ascending = True)
 date_list = list(data.Date.unique())
@@ -43,7 +43,7 @@ for k in K:
         accuracy_data = accu_item/(2*k)
         accuracy_list.append(accuracy_data)
     accuracy = round(sum(accuracy_list)/len(accuracy_list),4)
-    print('Overall accuracy for large cap with '+str(k)+' stocks is '+str(accuracy))
+    print('Overall accuracy for small cap with '+str(k)+' stocks is '+str(accuracy))
 
 y_pred = data['y_pred']
 y_true = data['y_true']
