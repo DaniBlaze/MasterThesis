@@ -41,15 +41,15 @@ def RNN(x, weights, biases):
     # Unstack to get a list of 'timesteps' tensors of shape (batch_size, num_input)
     x = tf.unstack(x, timesteps, 1)
 
-    # Define a lstm cell with tensorflow
-    lstm_cell = rnn.GRUCell(num_hidden, forget_bias=0.8)
+    # Define a gru cell with tensorflow
+    gru_cell = rnn.GRUCell(num_hidden)
 
     # Apply the Dropout
-    lstm_cell = tf.nn.rnn_cell.DropoutWrapper(lstm_cell, input_keep_prob=1.0, output_keep_prob=1.0 - dropout,
+    gru_cell = tf.nn.rnn_cell.DropoutWrapper(gru_cell, input_keep_prob=1.0, output_keep_prob=1.0 - dropout,
                                               state_keep_prob=1.0 - dropout)
 
-    # Get lstm cell output
-    outputs, states = rnn.static_rnn(lstm_cell, x, dtype=tf.float32)
+    # Get gru cell output
+    outputs, states = rnn.static_rnn(gru_cell, x, dtype=tf.float32)
 
     # Linear activation, using rnn inner loop last output
     return tf.matmul(outputs[-1], weights['out']) + biases['out']
@@ -77,7 +77,7 @@ saver = tf.train.Saver()
 
 label = list(range(timesteps * num_input)) + ['target'] + ['ticker'] + ['date']
 
-file_prefix = 'small'
+file_prefix = 'large'
 years = 9
 for i in range(years):
     file_path = path.Path(__file__).parent / 'finalized_dataset/'+str(file_prefix)+'_training_set_'+str(i)+'.csv'

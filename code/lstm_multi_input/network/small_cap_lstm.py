@@ -14,7 +14,7 @@ batch_size = 500
 display_step = 100
 
 # Network Parameters
-num_input = 1 # the normalized returns
+num_input = 8 # the normalized returns
 timesteps = 240 # timesteps
 num_hidden = 50 # hidden layer num of features
 num_classes = 1 # above or below the median

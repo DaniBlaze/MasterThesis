@@ -17,3 +17,4 @@ code/**/*.csv
 *.index
 *.meta
 *.vscode
+code/**/*.png
