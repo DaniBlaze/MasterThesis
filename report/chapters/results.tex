@@ -1,26 +1,443 @@
 \section{Overview}
-This chapter presents the resulting findings from training and testing the recurrent neural networks, and the results from applying the predictive models to the suggested portfolio strategies. The second section presents an analysis of predictive performance when applied to small cap and large cap stock returns. Section three presents an analysis on financial results from implementing the different portfolio strategies, where portfolio performance is measured before transaction costs. Portfolio performance after transaction costs is discussed on the basis of previous research, where only costs related to broker commissions is included in the backtesting. Arrival costs, lending fees for short-selling, and implementation shortfall is not simulated. However, by using average costs found in previous research, these transactions costs are discussed to compare portfolio performance before and after transaction costs, and to the best of the ability highlight how the models perform when applied to a real-life trading environment. Lastly, portfolio performance is compared with the returns of the small cap index OSESX and the benchmark index OSEBX, giving suitable reference measures to assess whether or not recurrent neural networks can be used as a supplementary tool for consistently achieving excess returns. 
+This chapter presents the resulting findings from training and testing the recurrent neural networks, and the results from applying the predictive models to the suggested portfolio strategies. The second section presents an analysis of predictive performance when applied to small cap and large cap stock returns. Section three presents an analysis on financial results from implementing the different portfolio strategies, where small cap portfolio performance is measured before transaction costs and compared with large cap portfolio performance. Portfolio performance after transaction costs is discussed on the basis of previous research, where only costs related to broker commissions is included in the backtesting. Arrival costs, lending fees for short-selling, and implementation shortfall is not simulated. However, by using average costs found in previous research, these transactions costs are discussed to compare portfolio performance before and after transaction costs, and to the best of the ability highlight how the models perform when applied to a real-life trading environment. Lastly, small cap and large cap portfolio performance is compared with the returns of the small cap index OSESX and the benchmark index OSEBX, giving suitable reference measures to assess whether or not recurrent neural networks can be used as a supplementary tool for consistently achieving excess returns. 
 
-\indent\newline
-The listed models below are the selected RNNs for predicting the probability of a stock outperforming the cross-sectional median return the next day (t+1):
+\subsection{Models}
+The listed models below are the selected RNNs for predicting the probability of a stock outperforming the cross-sectional median return the next day (t+1). There are a total of 12 selected models from 6 different variations of RNNs, as a result of each network being applied to small cap and large cap stocks:
 
 \indent \newline
-\begin{itemize}
-\item {\textbf{LSTM1:} This is the network which trains individually on each stock, with only one input feature of the previous 240 stock returns.} 
-\item {\textbf{LSTM2:} This is the network which trains on all stocks simultaneously, with only one input feature of the previous 240 stock returns.}  
-\item {\textbf{LSTM3:} This is the network which also trains on all stocks simultaneously, but an extra LSTM-layer is included in the network structure. It trains on only one input feature, which is the previous 240 stock returns.}
-\item {\textbf{LSTM4:} The last LSTM-variation trains on all stocks simultaneously with additional input features of the VIX, brent-crude oil price, US 10-years treasury yield, USD/NOK exchange rate, and technical indicators consisting of 50- and 200 days moving averages.}
-\end{itemize}    
+\begin{itemize} 
+\item {\textbf{lstm1\_small/large:} This is the network which trains on all stocks simultaneously, with only one input feature of the previous 240 stock returns.}  
+\item {\textbf{lstm2\_small/large} This is the network which also trains on all stocks simultaneously, but an extra LSTM-layer is included in the network structure. It trains on only one input feature, which is the previous 240 stock returns.}
+\item {\textbf{lstm3\_small/large:} The third LSTM-network trains on all stocks simultaneously, but with three LSTM-layers in the network structure. It trains on only one input feature, which is the previous 240 stock returns.}
+\item {\textbf{lstmi8\_small/large:} The last LSTM-variation trains on all stocks simultaneously with additional input features of the VIX, brent-crude oil price, US 10-years treasury yield, USD/NOK exchange rate, and technical indicators consisting of 50- and 200-days moving averages.}
+\item {\textbf{gru1\_small/large:} This is the GRU-network which trains on all stocks simultaneously, with one input feature of the previous 240 stock returns.}
+\item {\textbf{grui8\_small/large:} The is the GRU-variation which trains on all stocks simultaneously with additional input features of the VIX, brent-crude oil price, US 10-years treasury yield, USD/NOK exchange rate, and technical indicators consisting of 50- and 200-days moving averages.}
+\end{itemize}   
 
+\subsection{Hyperparameters}
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc}
+\toprule
+ & lstm1\_small/large & lstm2\_small/large & lstm3\_small/large & lstmi8\_small/large & gru1\_small/large & grui8\_small/large \\ \midrule
+Number of layers & 1 & 2 & 3 & 1 & 1 & 1 \\
+Hidden units layer 1 & 50 & 50 & 50 & 50 & 50 & 50 \\
+Hidden units layer 2 & - & 50 & 50 & - & - & - \\
+Hidden units layer 3 & - & - & 50 & - & - & - \\
+Output neurons & 1 & 1 & 1 & 1 & 1 & 1 \\
+Activation function & Sigmoid & Sigmoid & Sigmoid & Sigmoid & Sigmoid & Sigmoid \\
+Optimizer & RMSProp & RMSProp & RMSProp & RMSProp & RMSProp & RMSProp \\
+Training steps & 2000 & 2000 & 2000 & 2000 & 2000 & 2000 \\
+Batch size & 500 & 500 & 500 & 500 & 500 & 500 \\
+Learning rate & 0.005 & 0.005 & 0.005 & 0.005 & 0.005 & 0.005 \\
+Dropout & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 & 0.1 \\ \bottomrule
+\end{tabular}}
+\caption{Hyperparameters}
+\end{table}
+\indent \newline
+Table 5.1 shows the different hyperparameters incorporated in each of the RNNs. While comparing predictive performance between small caps and large caps is the main objective, and not optimizing model performance, hyperparameters-tuning has been carried out without achieving any significant changes to predictive performance. To reduce potential differences (and sources of error) when comparing predictive performance between small cap and large cap, the different hyperparameters are kept the same for each model.   
+  
 \section{Predictive Performance}
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc}
+\toprule
+ & \textbf{lstm1\_small} & \textbf{lstm2\_small} & \textbf{lstm3\_small} & \textbf{lstmi8\_small} & \textbf{gru1\_small} & \textbf{grui8\_small} \\ \midrule
+Accuracy & 0.5829 & 0.5684 & 0.5637 & 0.5694 & \textbf{0.5840} & 0.5771  \\
+Precision & 0.7572 & 0.6944 & 0.6781 & 0.7661 & \textbf{0.8726} & 0.7768  \\
+Recall & \textbf{0.6144} & 0.6136 & 0.6125 & 0.6009 & 0.5974 & 0.6054  \\
+F1-score & 0.6784 & 0.6515 & 0.6436 & 0.6735 & \textbf{0.7093} & 0.6805  \\
+Binary cross-entropy & 0.687 & 0.755 & 0.794 & 0.765 & \textbf{0.664} & 0.689  \\ \bottomrule
+\end{tabular}}
+\caption{Predictive performance for small cap}
+\end{table}
+
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc}
+\toprule
+ & \textbf{lstm1\_large} & \textbf{lstm2\_large} & \textbf{lstm3\_large} & \textbf{lstmi8\_large} & \textbf{gru1\_large} & \textbf{grui8\_large} \\ \midrule
+Accuracy & 0.5037 & \textbf{0.5089} & 0.5071 & 0.5031 & 0.5081 & 0.5042  \\
+Precision & 0.5485 & 0.5410 & 0.5636 & 0.6220 & 0.6227 &  \textbf{0.6649}  \\
+Recall & 0.5116 & \textbf{0.5169} & 0.5145 & 0.5100 & 0.5139 & 0.5101  \\
+F1-score & 0.5294 & 0.5286 & 0.5379 & 0.5605 & 0.5631 & \textbf{0.5773}  \\
+Binary cross-entropy & 0.785 & 0.910 & 0.909 & 0.893 & \textbf{0.711} & 0.733  \\ \bottomrule
+\end{tabular}}
+\caption{Predictive performance for large cap}
+\end{table}
+
+\indent\newline
+Tables 5.2 and 5.3 highlights predictive performance for the different models when predicting returns for small cap and large stocks. Table 5.1 shows that the overall best performing model for small cap is gru1\_small, scoring highest on accuracy, precision, F1-score and cross-entropy (lowest), while the lstm1\_small has the highest score on recall. For large cap stock returns, lstm2\_large barely outperforms the other models on measures of accuracy and recall. grui8\_large scores the highest on precision and F1-score, while gru1\_large has the best binary cross entropy score. It seems implementing additional layers in the network structure does not have any significant effect on predictive performance. This can be a result of the networks needing further fine-tuning of hyperparameters, or more observations for training. The additional input features also seems to have only a minor effect on model performance, which can be a result of previous returns reflecting all factors with an influence on share price.
+
+\indent\newline
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccc}
+\hline
+ & \textbf{gru1\_small} & \textbf{grui8\_small} & \textbf{grui8\_large} & \textbf{gru1\_large} \\ \midrule
+Accuracy & \textbf{0.5840} & 0.5771 & 0.5042 & 0.5081 \\
+Precision & \textbf{0.8726} & 0.7768 & 0.6649 & 0.6227 \\
+Recall & 0.5974 & \textbf{0.6054} & 0.5101 & 0.5139 \\
+F1-score & \textbf{0.7093} & 0.6805 & 0.5773 & 0.5631 \\
+Binary cross-entropy & \textbf{0.664} & 0.689 & 0.733 & 0.711 \\ \bottomrule
+\end{tabular}}
+\caption{Comparison of top performing models}
+\end{table}
+
+\indent\newline
+Table 5.4 illustrates the top two models for each group of stocks, based on equally weighting each performance measure. Comparing predictive performance across both group, shows that predictive models trained on small cap data outperforms models trained on large cap data on every performance measure. There are relatively big differences in all measures. The accuracy for the large cap models are just above 50\%, which is close to a random guess, while the two small cap models have accuracy measures of 58.4\% and 57.7\%, respectively. The binary cross entropy score is arguably the most important performance measure, as it accounts for how far the predicted probabilities are from the true values, and is the basis for which stocks to invest in. Also here, the small cap models outperform the large cap models with scores of 0.664 and 0.689, and 0.733 and 0.711 for the large cap models.     
+
+\section{Portfolio Performance before Transaction Costs}
+The following section presents the results from backtesting each model with a portfolio strategy consisting of only long-positions. The models instruct which five stocks to invest in each trading day, based on the predicted probability of a stock outperforming the cross-sectional median return the next day, and where all positions are weighted equally. Portfolio performance is assessed without taking into account transaction costs.    
+
+\subsection{Small cap}
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc|c}
+\toprule
+Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_small} & \textbf{lstm3\_small} & \textbf{lstmi8\_small} & \textbf{gru1\_small} & \textbf{grui8\_small} & {\color[HTML]{656565} \textbf{benchmark\_small}} \\ \midrule
+Return & \textbf{1.1556} & 1.1023 & 0.8226 & 0.7030 & 0.6402 & 0.5194 & {\color[HTML]{656565} 0.1313} \\
+Standard deviation & 0.3589 & 0.4120 & 0.3537 & 0.3768 & \textbf{0.3237} & 0.3320 & {\color[HTML]{656565} 0.1773} \\
+Sharpe ratio & \textbf{3.1720} & 2.6341 & 2.2771 & 1.8202 & 1.9234 & 1.5128 & {\color[HTML]{656565} 0.6435} \\
+Max drawdown & 0.1888 & \textbf{0.1751} & 0.3003 & 0.3021 & 0.2242 & 0.3819 & {\color[HTML]{656565} 0.3295} \\
+VaR 5\% & \textbf{0.5653} & 0.4247 & 0.2409 & 0.0833 & 0.1075 & -0.0265 & {\color[HTML]{656565} -0.1602} \\ \bottomrule
+\end{tabular}}
+\caption{Small cap trading performance (long, K=5)}
+\end{table}
+
+\indent\newline
+The table above shows the annualized performance metrics for each model when applied to a long-portfolio of five stocks. The portfolio termed benchmark\_small represents a diversified portfolio consisting of each small cap stock included in the data set, and is used as a benchmark measure. Analyzing the different metrics shows that the lstm1\_small network is the top-performing model with annualized returns of 115.56\%. Further, the model generates the highest Sharpe ratio, with a ratio of 3.17, as well as the best measure on value at risk. There is a 5\% probability of realizing an annualized return lower than 56.53\%, which is an exceptionally good annualized return. Taking into consideration the substantial annualized returns, a max drawdown of 18.88\% indicates a moderate to low level of downside risk during the period (in addition to the VaR-measure). The lstm2\_small is the second best performing model, with an annualized return of 110.23\%. Even though this network nearly generates the same amount of annualized returns as lstm1\_small, the portfolio composition has a higher risk, illustrated by a Sharpe ratio of 2.63 and a standard deviation of 41.2\%. On the other hand, it has a lower downside risk with a max drawdown of 17.51\%.  
+
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_small_cap_return_no_cost.png}
+\caption{Trading performance - small cap (long, K=5)}
+\label{fig:smalltrading}
+\end{figure}
+
+\indent\newline 
+Figure 5.1 further illustrates the findings with the two LSTM-models clearly outperforming the other models in terms of cumulative returns. The lstm1\_small generates cumulative returns of 928\%, while the worst-performing model grui8\_small generates cumulative returns of 386\%. All of the RNNs show promising results in terms of achieving excess returns, where the benchmark portfolio is outperformed with at least twice the cumulative returns, "only" generating cumulative returns of 105\%.  
+
+\indent\newline 
+An interesting part of the trading period is when the market crashed in the first half of 2020 during the breakout of the Corona-virus, and where the market cap of the Oslo Stock Exchange plummeted more than 30\% in the duration of approximately one month. While the graph illustrates each model experiencing a significant drop during the period, there is a big difference in drawdown between the top performing models. The drawdown of the lstm1\_small is relatively small considering the broad market drawdown, while the lstm2\_small experiences a much higher drawdown. This corresponds well with the lstm2\_small having higher risk, illustrated by a higher standard deviation and lower Sharpe ratio.    
+
+\indent\newline
+The analysis of predictive performance ranks gru1\_small and grui8\_small as the top-performing models for predicting small stock returns, while the analysis of portfolio performance ranks lstm1\_small and lstm2\_small as the most suitable models for achieving excess returns. A possible explanation for the differences in performance evaluation relates to the models' training process. The GRU-networks may have focused more on learning patterns within a larger number of stocks, enabling them to correctly classify a higher percentage of stocks outperforming the cross-sectional median return. The one- and two-layered LSTM may have learned patterns within a limited number of stocks that have been among the top-performing stocks during the period, enabling them to correctly predict high probabilities of the stocks that have performed well during the period. The LSTM-networks predictive performance may therefore have suffered from a higher rate of incorrect classifications, while still being able to generate higher returns.  
+
+\subsection{Large cap}
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc|c}
+\toprule
+Annualized & \textbf{lstm1\_large} & \textbf{lstm2\_large} & \textbf{lstm3\_large} & \textbf{lstmi8\_large} & \textbf{gru1\_large} & \textbf{grui8\_large} & {\color[HTML]{656565} \textbf{benchmark\_large}} \\ \midrule
+Return & 0.1576 & 0.1956 & 0.0805 & 0.1501 & 0.1911 & \textbf{0.2268} & {\color[HTML]{656565} 0.1539} \\
+Standard deviation & 0.2733 & 0.2595 & \textbf{0.2443} & 0.2679 & 0.2616 & 0.2498 & {\color[HTML]{656565} 0.1782} \\
+Sharpe ratio & 0.5135 & 0.6873 & 0.2590 & 0.4957 & 0.6648 & \textbf{0.8388} & {\color[HTML]{656565} 0.7670} \\
+Max drawdown & 0.3464 & 0.2901 & 0.3130 & 0.3214 & 0.3201 & \textbf{0.2889} & {\color[HTML]{656565} 0.0582} \\
+VaR 5\% & -0.2918 & -0.2311 & -0.3212 & -0.2906 & -0.2390 & \textbf{-0.1840} & {\color[HTML]{656565} -0.1391} \\ 
+\bottomrule
+\end{tabular}}
+\caption{Large cap trading performance (long, K=5)}
+\end{table}
+\indent\newline 
+Employing the selected RNNs to predicting large cap stock returns  results in much smaller differences between the models' portfolio performance, compared to the models employed to predicting small cap stock returns. Table 5.6 ranks grui8\_large as the best-performing model with an annualized return of 22.68\% and a Sharpe ratio of 0.84. It is also the top-performing model when assessing portfolio risk with a max drawdown of 28.9\% and a VaR of -18.4\%. The second best-performing model is lstm2\_large with an annualized return of almost 20\% and a Sharpe ratio of 0.69. It has a slightly higher max drawdown of 29\% and -23\% VaR. lstm3\_large is the worst-performing RNN with annualized returns of 8\%, Sharpe ratio of 0.26, max drawdown of 31\% and a VaR of -32\%. The model has the lowest fluctuation in annualized returns, illustrated by a standard deviation of 24\%.
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_large_cap_return_no_cost.png}
+\caption{Trading performance - large cap (long, K=5)}
+\label{fig:largetrading}
+\end{figure}
+\indent\newline 
+The graphical representation of accumulative returns further emphasizes the findings. Even though most of the RNNs outperform the large cap benchmark in terms of greater annualized returns, only grui8\_large is able to realize a higher Sharpe ratio than the benchmark portfolio. In other words, when adjusting for each portfolio's level of risk, the other models underperform against the benchmark. Comparing predictive performance and portfolio performance shows that the highest ranked RNNs (grui8\_large and gru1\_large) in terms of predictive performance are among the models that generates the highest annualized returns. This is more consistent than the models employed to predicting small cap stock returns.     
+
+\subsection{Small cap vs Large cap}
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccc|cc}
+\toprule
+Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_small} & \textbf{grui8\_large} & \textbf{lstm2\_large} & {\color[HTML]{656565} \textbf{benchmark\_small}} & {\color[HTML]{656565} \textbf{benchmark\_large}} \\ \midrule
+Return & \textbf{1.1556} & 1.1023 & 0.2268 & 0.1956 & 0.1313 & 0.1539 \\
+Standard deviation & 0.3589 & 0.4120 & \textbf{0.2498} & 0.2595 & 0.1773 & 0.1782 \\
+Sharpe ratio & \textbf{3.1720} & 2.6341 & 0.8388 & 0.6873 & 0.6435 & 0.7670 \\
+Max drawdown & 0.1888 & \textbf{0.1751} & 0.2889 & 0.2901 & 0.3295 & 0.0582 \\
+VaR 5\% & \textbf{0.5653} & 0.4247 & -0.1840 & -0.2311 & -0.1602 & -0.1391 \\ 
+\bottomrule
+\end{tabular}}
+\caption{Comparing trading performance (long, K=5)}
+\end{table}
+\indent\newline 
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|c}
+\toprule
+Annualized & \textbf{lstm1\_small} & \textbf{grui8\_large} & \textbf{Difference} \\ \midrule
+Return & \textbf{1.1556} & 0.2268 & 0.9288 \\
+Standard deviation & 0.3589 & \textbf{0.2498} & 0.1091 \\
+Sharpe ratio & \textbf{3.1720} & 0.8388 & 2.3332 \\
+Max drawdown & \textbf{0.1888} & 0.2889 & -0.1001 \\
+VaR 5\% & \textbf{0.5653} & -0.1840 & 0.7493 \\
+\bottomrule
+\end{tabular}}
+\caption{Top performing model for small and large cap (long, K=5)}
+\end{table}
+\indent\newline 
+Comparing portfolio performance of the top models for each group of stocks shows substantial differences in annualized returns and portfolio risk. The top performing small cap model lstm1\_small generates approximately 90\ percentage points more in annualized returns compared to the best large cap model grui8\_large. The small cap model also clearly outperforms the large cap model when adjusting for risk, represented by a 2.33 higher Sharpe ratio. There are significant differences between downside risk, where the lstm1\_small has a max drawdown of 18.88\% and a 5\% probability of realizing annualized returns below 56.53\%. The corresponding measures for grui8\_large is 28.89\% and -18.4\%. The small cap models have a higher standard deviation which points to higher fluctuations in returns, but this can be a result of having a much higher rate of increase in annualized returns. 
+
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_best_mix_cap_return_no_cost.png}
+\caption{Small cap and large cap trading performance (long, K=5)}
+\label{fig:mixtrading}
+\end{figure}
+
+\indent\newline 
+Figure 5.3 shows a similar development in cumulative returns for both group of stocks during the first years of trading. In 2014 the small cap models' rate of returns starts to increase significantly more than the large cap models, while the large cap RNNs have a higher correlation with the benchmarks, resulting in a more similar development in cumulative returns throughout the period. Comparing benchmarks, shows that the small cap benchmark underperforms the large cap benchmark in the period. This should in theory be an advantage for the large models, as they are selecting stocks from a group with overall larger returns. A possible explanation to why the small cap models are able to outperform the large cap models, relates to the composition of the small cap group. There are often two types of companies that have a small market capitalization; young companies with expectations of experiencing a high rate of growth the coming years, and companies that are characterized by having high debt-to-equity ratios where several of them may be facing bankruptcy. This means there is a portion of small cap stocks with the potential to give abnormal returns, while the large cap models will not have these outperforming-stocks to choose from. When the small cap RNNs are able to differentiate between these two types of stocks, it leads to large differences in cumulative returns for the two groups of models employed to predicting stock returns. 
+
+\indent\newline 
+Having established that LSTM- and GRU-networks can be employed to predicting small cap stock returns, generate excess returns and outperform large cap stocks, the next section assess how the small cap models perform when transaction costs are included in the backtesting.
+
+\section{Portfolio Performance after Transaction Costs}
+This section implements explicit transactions costs in the form of broker commissions to evaluate the RNNs' portfolio performance in a more realistic trading environment. A fee of 3.5 basis points incurs each time a model chooses to buy or sell a stock. The commission fee is based on being a VIP-customer of Nordnet, which requires executing a minimum of 30 trades each month \cite{nordnet}. The models exceed this limit as the portfolios are re-balanced on a daily basis. 
+
 \subsection{Small Cap}
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc|c}
+\toprule
+Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_small} & \textbf{lstm3\_small} & \textbf{lstmi8\_small} & \textbf{gru1\_small} & \textbf{grui8\_small} & {\color[HTML]{656565} \textbf{benchmark\_small}} \\ \midrule
+Return & \textbf{0.7050} & 0.5595 & 0.2548 & 0.1379 & 0.1796 & -0.0535 & {\color[HTML]{656565} 0.1313} \\
+Standard deviation & 0.3569 & 0.4107 & 0.3526 & 0.3760 & \textbf{0.3225} & 0.3309 & {\color[HTML]{656565} 0.1773} \\
+Sharpe ratio & \textbf{1.9273} & 1.3204 & 0.6737 & 0.3208 & 0.5032 & -0.2141 & {\color[HTML]{656565} 0.6435} \\
+Max drawdown & \textbf{0.2598} & 0.3180 & 0.6726 & 0.8213 & 0.4294 & 1.0275 & {\color[HTML]{656565} 0.3677} \\
+VaR 5\% & \textbf{0.1180} & -0.1159 & -0.3250 & -0.4805 & -0.3510 & -0.5978 & {\color[HTML]{656565} -0.1602} \\
+Total number of trades & \textbf{10,339} & 12,455 & 13,031 & 12,019 & 10,525 & 12,187 & {\color[HTML]{656565} -} \\ \bottomrule
+\end{tabular}}
+\caption{Small cap trading performance w/t.cost (long, K=5)}
+\end{table}
+
+\indent\newline 
+Table 5.9 shows a significant (expected) drop in portfolio performance for the majority of the RNNs. The results from including transaction costs highlights the importance of models being able to identify stocks with a high probability of becoming future large cap stocks, and ultimately separate winners from losers. The lstm1\_small demonstrates a superior capability of identifying long-term winners compared to the lstm2\_small network. While the lstm2\_small model executes a total of 12,455 trades, the lstm1\_small only needs to perform 10,339 trades throughout the period. The ability of identifying winners translates into fewer trades, where winners are selected on the basis of a longer time frame, which has a large effect on portfolio performance.
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_small_cap_return_with_cost.png}
+\caption{Small cap trading performance w/t.cost (long, K=5)}
+\label{fig:smallcost}
+\end{figure}
+\indent\newline 
+Comparing the two top-performing models prior to transaction costs and after, highlights the impact transactions costs have on cumulative returns. Prior to transaction costs, there is only a small difference in total cumulative returns for the lstm1\_small and the lstm2\_small models (928\% vs 885\%), while after transaction costs the difference is much bigger (566\% vs 449\%). Despite the negative impact of transaction costs, every model is able to outperform the benchmark measure in terms of cumulative returns, except for the grui8\_small network. However, when adjusting for portfolio risk, only the one-layered and stacked LSTM-networks are able to outperform the benchmark, with Sharpe ratios of 1.92, 1.32 and 0.67.    
+
 \subsection{Large Cap}
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc|c}
+\toprule
+Annualized & \textbf{lstm1\_large} & \textbf{lstm2\_large} & \textbf{lstm3\_large} & \textbf{lstmi8\_large} & \textbf{gru1\_large} & \textbf{grui8\_large} & {\color[HTML]{656565} \textbf{benchmark\_large}} \\ \midrule
+Return & -0.4671 & -0.4203 & -0.5497 & \textbf{-0.4163} & -0.4738 & -0.4706 & {\color[HTML]{656565} 0.1539} \\
+Standard deviation & 0.2723 & 0.2588 & \textbf{0.2431} & 0.2676 & 0.2607 & 0.2489 & {\color[HTML]{656565} 0.1782} \\
+Sharpe ratio & -1.7789 & -1.6907 & -2.3326 & \textbf{-1.6202} & -1.8837 & -1.9601 & {\color[HTML]{656565} 0.7670} \\
+Max drawdown & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & {\color[HTML]{656565} 0.0582} \\
+VaR 5\% & -0.9150 & \textbf{-0.8460} & -0.9496 & -0.8565 & -0.9026 & -0.8800 & {\color[HTML]{656565} -0.1391} \\
+Total number of trades & 14,337 & 14,135 & 14,465 & \textbf{12,047} & 15,199 & 14,833 & {\color[HTML]{656565} -} \\ \bottomrule
+\end{tabular}}
+\caption{Large cap trading performance w/t.cost (long, K=5)}
+\end{table}
+\indent\newline 
+Including transaction costs for the large cap models has an even larger negative impact on portfolio performance. None of the models are able to generate positive returns, and they are greatly outperformed by the benchmark portfolio. The least worst models are lstmi8\_large and lstm2\_large, with annualized returns of -41.63\% and -42.03\%, and Sharpe ratios of -1.62 and -1.69 respectively.  
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_large_cap_return_with_cost.png}
+\caption{Large cap trading performance w/t.cost (long, K=5)}
+\label{fig:largecost}
+\end{figure}
+\indent\newline 
+Figure 5.5 further emphasizes the findings, showing that the models' cumulative returns ranges from -309\% to -441\%, while the benchmark realizes cumulative returns of 123\%. In theory, it is not possible to generate negative returns below 100\% since the portfolio strategy consists of only being long and not short. However, the graph illustrates the resulting outcome if one were to keep adding investing capital to the portfolio throughout the period.    
 
-\section{Portfolio Performance Before Transaction Costs}
+\subsection{Small cap vs Large Cap}
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccc|cc}
+\toprule
+Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_small} & \textbf{lstmi8\_large} & \textbf{lstm2\_large} & {\color[HTML]{656565} benchmark\_small} & {\color[HTML]{656565} benchmark\_large} \\ \midrule
+Return & \textbf{0.7050} & 0.5595 & -0.4163 & -0.4203 & {\color[HTML]{656565} 0.1313} & {\color[HTML]{656565} 0.1539} \\
+Standard deviation & 0.3569 & 0.4107 & 0.2676 & \textbf{0.2588} & {\color[HTML]{656565} 0.1773} & {\color[HTML]{656565} 0.1782} \\
+Sharpe ratio & \textbf{1.9273} & 1.3204 & -1.6202 & -1.6907 & {\color[HTML]{656565} 0.6435} & {\color[HTML]{656565} 0.7670} \\
+Max drawdown & \textbf{0.2598} & 0.3180 & 1.0000 & 1.0000 & {\color[HTML]{656565} 0.3295} & {\color[HTML]{656565} 0.0582} \\
+VaR 5\% & \textbf{0.1180} & -0.1159 & -0.8565 & -0.8460 & {\color[HTML]{656565} -0.1602} & {\color[HTML]{656565} -0.1391} \\
+Total number of trades & \textbf{10,339} & 12,455 & 12,047 & 14,135 & {\color[HTML]{656565} -} & {\color[HTML]{656565} -} \\ \bottomrule
+\end{tabular}}
+\caption{Comparison of trading performance w/t.costs (long, K=5)}
+\end{table}
 
-\section{Portfolio Performance After Transaction Costs}
+\indent\newline
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|c}
+\toprule
+Annualized & \textbf{lstm1\_small} & \textbf{lstmi8\_large} & \textbf{Difference} \\ \midrule
+Return & \textbf{0.7050} & -0.4163 & 1.1213 \\
+Standard deviation & 0.3569 & \textbf{0.2676} & 0.0893 \\
+Sharpe ratio & \textbf{1.9273} & -1.6202 & 3.5475 \\
+Max drawdown & \textbf{0.2598} & 1.0000 & -0.7402 \\
+VaR 5\% & \textbf{0.1180} & -0.8565 & 0.9745 \\
+Total number of trades & \textbf{10,339} & 12,047 & -1,708 \\ \bottomrule
+\end{tabular}}
+\caption{Comparison of top models w/t.costs (long, K=5)}
+\end{table}
+\indent\newline
+The tables above highlights how the small cap RNNs outperform the large cap models. Including explicit transaction costs further emphasize the vast differences in portfolio performance choosing to trade small cap stocks as apposed to large cap stocks. It is clear that employing RNNs to predict large stock returns is not a profitable trading strategy, where an investor would probably change his/hers investing strategy, rather than keep adding funds to an unsuccessful portfolio. The top-performing large cap models are able to outperform the benchmark without taking into consideration transaction costs, but when these are included they suffer from the high trading frequency.       
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_best_mix_cap_return_cost.png}
+\caption{Comparison of trading performance w/t.cost (long, K=5)}
+\label{fig:mixcost}
+\end{figure} 
+\indent\newline 
+Figure 5.6 illustrates the superior performance of the small cap models. The small cap RNNs generate cumulative returns of 566\% and 449\%, while the large cap RNNs generate negative cumulative returns of 309\% and 337\%. When comparing the best-performing model for each group (lstm1\_small and lstmi8\_large) the small cap model outperforms the large cap model in terms of managing to achieve a 112 percentage points higher annualized return and a 3.54 higher Sharpe ratio. The lstm1\_small model also outperform the benchmarks, with a 1.28 higher Sharpe ratio than the benchmark\_small, and a 1.16 higher Sharpe ratio than the benchmark\_large. 
 
-\section{Small Cap and Benchmarks}
+\indent\newline 
+The resulting findings in this section suggest RNNs can be employed to predicting small cap stock returns for a long portfolio consisting of 5 stocks, re-balanced on a daily basis, and generate significant excess returns compared to large cap stocks. Evidence points towards the models having the ability to take advantage of the small cap stocks'  high volatility and fluctuation in share price as apposed to the lower volatility in large cap stocks. Even though implicit transaction costs in the form of arrival costs is not included in the backtesting, it is interesting to see how findings from previous research on the bid-ask spread on the Oslo Stock Exchange affects the results. Assuming an average bid-ask spread from the work of Lund et al. and Ødegaard \cite{lund}\cite{ode} gives arrival costs of 150 basis points in addition to 3.5 basis points in explicit transaction costs. Including these costs results in cumulative returns of 410\% for the lstm1\_small, reducing total returns with 156\% percentage points. This highlights the strong performance of the one-layered LSTM-network applied to small caps, where it is still able to generate excess returns.          
 
+\indent\newline 
+In the following sections, the models are tested with two additional portfolio strategies, namely a 50/50 long-short portfolio and a short-only portfolio.
+
+\section{Additional Trading Strategies}
+\subsection{Long-short 50/50 before transaction cost}
+The long-short portfolio strategy consists of going long two stocks and going short two stocks, giving a total of four positions in the portfolio. As with the former strategy the portfolio is re-balanced each day, where long positions are based on the two highest predicted probabilities of a stock outperforming the cross-sectional median return, while short positions are based on the two lowest predicted probabilities.
+\indent\newline 
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc|c}
+\toprule
+Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_small} & \textbf{lstm3\_small} & \textbf{lstmi8\_small} & \textbf{gru1\_small} & \textbf{grui8\_small} & {\color[HTML]{656565} \textbf{benchmark\_small}} \\ \midrule
+Return & \textbf{2.6358} & 2.0698 & 1.4935 & 1.1650 & 0.7671 & 0.3508 & {\color[HTML]{656565} 0.1313} \\
+Standard deviation & 0.9795 & 1.0144 & 0.8187 & 0.9863 & \textbf{0.8777} & 1.4605 & {\color[HTML]{656565} 0.1773} \\
+Sharpe ratio & \textbf{2.6732} & 2.0233 & 1.8030 & 1.1636 & 0.8543 & 0.2283 & {\color[HTML]{656565} 0.6435} \\
+Max drawdown & 0.0774 & 0.9584 & 0.1513 & 0.9232 & \textbf{0.0427} & 1 & {\color[HTML]{656565} 0.3295} \\
+VaR 5\% & \textbf{1.0246} & 0.4012 & 0.1467 & -0.4573 & -0.6766 & -2.051 & {\color[HTML]{656565} -0.1602} \\ \bottomrule
+\end{tabular}}
+\caption{50/50 long-short small cap (2K, K=2)}
+\end{table}
+\indent\newline 
+The lstm1\_small is the best-performing model, producing annualized returns of 263\% and a Sharpe ratio of 2.67. The annualized standard deviation is 97\% and there is a 5\% probability of realizing a return lower than 102\% (VaR). The worst-performing model is grui8\_small, with annualized returns of 35\% and a Sharpe ratio of 0.22.  
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_small_cap_return_no_cost_n.png}
+\caption{Small cap trading performance 50/50 (2K, K=2)}
+\label{fig:5050small}
+\end{figure} 
+\indent\newline 
+The figure above displays each model realizing a higher cumulative return than the benchmark portfolio. All models outperform the benchmark in terms of having a higher Sharpe ratio, except for grui8\_small. 
+\indent\newline 
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc|c}
+\toprule
+Annualized & \textbf{lstm1\_large} & \textbf{lstm2\_large} & \textbf{lstm3\_large} & \textbf{lstmi8\_large} & \textbf{gru1\_large} & \textbf{grui8\_large} & {\color[HTML]{656565} \textbf{benchmark\_large}} \\ \midrule
+Return & -0.0884 & \textbf{0.2158} & -0.0514 & -0.1092 & -0.0762 & 0.1161 & {\color[HTML]{656565} 0.1539} \\
+Standard deviation & 0.4402 & 0.3969 & \textbf{0.3795} & 0.4273 & 0.4983 & 0.3838 & {\color[HTML]{656565} 0.1782} \\
+Sharpe ratio & -0.2401 & \textbf{0.5000} & -0.1809 & -0.2961 & -0.1876 & 0.2574 & {\color[HTML]{656565} 0.7670} \\
+Max drawdown & 0.1792 & \textbf{0.0315} & 0.8610 & 0.2402 & 0.1066 & 0.0459 & {\color[HTML]{656565} 0.0582} \\
+VaR 5\% & -0.8125 & \textbf{-0.4371} & -0.6757 & -0.8122 & -0.8959 & -0.5153 & {\color[HTML]{656565} -0.1391} \\ \bottomrule
+\end{tabular}}
+\caption{50/50 long-short large cap (2K, K=2)}
+\end{table}
+The top-performing model for the group of large cap stocks is lstm2\_large with annualized returns of 21.58\% and a Sharpe ratio of 0.50. The model has a lot more downside risk compared to the lstm1\_small represented by a 5\% probability of realizing a return lower than -43.71\%. lstmi8\_large is the worst-performing model with annualized returns of -10.92\% and a Sharpe ratio of -0.29.    
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_large_cap_return_no_cost_n.png}
+\caption{Large cap trading performance 50/50 (2K, K=2)}
+\label{fig:5050large}
+\end{figure} 
+\indent\newline 
+The lstm2\_large is the only RNN which generates higher cumulative returns than the benchmark, but in terms of risk-adjusted returns (Sharpe ratio) none of the models are able to outperform the benchmark. Both of the GRU-networks generate higher cumulative returns than the benchmark during certain times of the trading period, but performance decline towards the end of the period.   
+
+\indent\newline 
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|c}
+\toprule
+Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_large} & \textbf{Difference} \\ \midrule
+Return & \textbf{2.6358} & 0.2158 & 2.4200 \\
+Standard deviation & 0.9795 & \textbf{0.3969} & 0.5826 \\
+Sharpe ratio & \textbf{2.6732} & 0.5000 & 2.1732 \\
+Max drawdown & 0.0774 & \textbf{0.0315} & 0.0459 \\
+VaR 5\% & \textbf{1.0246} & -0.4371 & 1.4617 \\ \bottomrule
+\end{tabular}}
+\caption{50/50 long-short comparison of top models (2K, K=2)}
+\end{table}
+\indent\newline 
+A comparison of the top RNNs from each group of stocks shows extremely large differences in portfolio performance. The small cap LSTM-network generates 242\% higher annualized returns and a 2.17 higher Sharpe ratio. There is also substantially less downside risk in the small cap portfolio, illustrated by a VaR of 102\% compared to a VaR of -43\%.
+
+\indent\newline 
+FIGUUUUUR
+
+\subsection{Long-short 50/50 after transaction cost}
+This section implements broker commission in order to simulate a more realistic trading environment. Fees for lending shares intended for short selling is not included in the backtesting. 
+\indent\newline 
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc|c}
+\toprule
+Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_small} & \textbf{lstm3\_small} & \textbf{lstmi8\_small} & \textbf{gru1\_small} & \textbf{grui8\_small} & {\color[HTML]{656565} \textbf{benchmark\_small}} \\ \midrule
+Return & \textbf{2.1462} & 1.5309 & 0.9342 & 0.6613 & 0.2481 & -0.2203 & {\color[HTML]{656565} 0.1313} \\
+Standard deviation & 0.9781 & 1.0131 & \textbf{0.8177} & 0.9855 & 0.8765 & 1.4598 & {\color[HTML]{656565} 0.1773} \\
+Sharpe ratio & \textbf{2.1764} & 1.4940 & 1.1213 & 0.6534 & 0.2633 & -0.1627 & {\color[HTML]{656565} 0.6435} \\
+Max drawdown & 0.0832 & 1.0000 & 0.1578 & 1.0000 & \textbf{0.0442} & 1.0000 & {\color[HTML]{656565} 0.3295} \\
+VaR 5\% & \textbf{0.5372} & -0.1355 & -0.4108 & -0.9597 & -1.1936 & -2.6216 & {\color[HTML]{656565} -0.1602} \\
+Total number of trades & 11,236 & 12,366 & 12,836 & \textbf{10,714} & 11,864 & 12,148 & {\color[HTML]{656565} -} \\ \bottomrule
+\end{tabular}}
+\caption{50/50 long-short small cap w/t.cost (2K, K=2)}
+\end{table}
+\indent\newline 
+Evaluating portfolio performance after including transaction costs shows that the lstm1\_small is the best performing model with annualized returns of 214\% and an annualized Sharpe ratio of 2.17. This means the costs related to broker commissions reduce the annualized returns with approximately 50 percentage points and the Sharpe ratio with 0.5. 
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_small_cap_return_with_cost_n.png}
+\caption{Small cap trading performance w/t.cost 50/50 (2K, K=2)}
+\label{fig:5050smallc}
+\end{figure} 
+\indent\newline 
+All of the RNNs outperform the benchmark in terms of excess returns, except for grui8\_small. The GRU-network experiences a large drop in returns at the end of 2016, which it never recovers from. The two GRU-networks are the only models that are not able to outperform the benchmark when looking at Sharpe ratio.
+
+\indent\newline 
+\begin{table}[ht]
+\centering
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cccccc|c}
+\toprule
+Annualized & \textbf{lstm1\_large} & \textbf{lstm2\_large} & \textbf{lstm3\_large} & \textbf{lstmi8\_large} & \textbf{gru1\_large} & \textbf{grui8\_large} & {\color[HTML]{656565} \textbf{benchmark\_large}} \\ \midrule
+Return & -0.6427 & \textbf{-0.3538} & -0.6300 & -0.6250 & -0.6588 & -0.5042 & {\color[HTML]{656565} 0.1539} \\
+Standard deviation & 0.4390 & 0.3965 & \textbf{0.3784} & 0.4266 & 0.4972 & 0.3836 & {\color[HTML]{656565} 0.1782} \\
+Sharpe ratio & -1.5033 & \textbf{-0.9357} & -1.7107 & -1.5056 & -1.3597 & -1.3595 & {\color[HTML]{656565} 0.7670} \\
+Max drawdown & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & 1.0000 & {\color[HTML]{656565} 0.0582} \\
+VaR 5\% & -1.3650 & \textbf{-1.0061} & -1.2525 & -1.3268 & -1.4767 & -1.1352 & {\color[HTML]{656565} -0.1391} \\
+Total number of trades & 12,722 & 13,072 & 13,280 & \textbf{10,970} & 13,318 & 13,194 & {\color[HTML]{656565} -} \\ \bottomrule
+\end{tabular}}
+\caption{50/50 long-short large cap w/t.cost (2K, K=2)}
+\end{table}
+
+\indent\newline 
+\begin{figure}[H]
+\centering
+\includegraphics [scale=0.60,angle=360]{figures/cumulative_large_cap_return_with_cost_n.png}
+\caption{Large cap trading performance w/t.cost 50/50 (2K, K=2)}
+\label{fig:5050largec}
+\end{figure} 
+
+
+\indent\newline 
+OBS! reason why small cap is better is because of small cap models having stocks that are facing bankruptcy (short) and stocks with growth potential (long)
+
+\subsection{Short-only before transaction costs}
+
+\subsection{Short-only after transaction costs}
 
 
