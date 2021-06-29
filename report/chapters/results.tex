@@ -72,7 +72,7 @@ Tables 5.2 and 5.3 highlights predictive performance for the different models wh
 \indent\newline
 \begin{table}[ht]
 \centering
-\resizebox{\textwidth}{!}{\begin{tabular}{l|cccc}
+\resizebox{10cm}{!}{\begin{tabular}{l|cccc}
 \hline
  & \textbf{gru1\_small} & \textbf{grui8\_small} & \textbf{grui8\_large} & \textbf{gru1\_large} \\ \midrule
 Accuracy & \textbf{0.5840} & 0.5771 & 0.5042 & 0.5081 \\
@@ -84,6 +84,7 @@ Binary cross-entropy & \textbf{0.664} & 0.689 & 0.733 & 0.711 \\ \bottomrule
 \caption{Comparison of top performing models}
 \end{table}
 
+\indent\newline
 \indent\newline
 Table 5.4 illustrates the top two models for each group of stocks, based on equally weighting each performance measure. Comparing predictive performance across both group, shows that predictive models trained on small cap data outperforms models trained on large cap data on every performance measure. There are relatively big differences in all measures. The accuracy for the large cap models are just above 50\%, which is close to a random guess, while the two small cap models have accuracy measures of 58.4\% and 57.7\%, respectively. The binary cross entropy score is arguably the most important performance measure, as it accounts for how far the predicted probabilities are from the true values, and is the basis for which stocks to invest in. Also here, the small cap models outperform the large cap models with scores of 0.664 and 0.689, and 0.733 and 0.711 for the large cap models.     
 
@@ -167,10 +168,9 @@ VaR 5\% & \textbf{0.5653} & 0.4247 & -0.1840 & -0.2311 & -0.1602 & -0.1391 \\
 \end{tabular}}
 \caption{Comparing trading performance (long, K=5)}
 \end{table}
-\indent\newline 
 \begin{table}[ht]
 \centering
-\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|c}
+\resizebox{10cm}{!}{\begin{tabular}{l|cc|c}
 \toprule
 Annualized & \textbf{lstm1\_small} & \textbf{grui8\_large} & \textbf{Difference} \\ \midrule
 Return & \textbf{1.1556} & 0.2268 & 0.9288 \\
@@ -276,7 +276,7 @@ Total number of trades & \textbf{10,339} & 12,455 & 12,047 & 14,135 & {\color[HT
 \indent\newline
 \begin{table}[ht]
 \centering
-\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|c}
+\resizebox{10cm}{!}{\begin{tabular}{l|cc|c}
 \toprule
 Annualized & \textbf{lstm1\_small} & \textbf{lstmi8\_large} & \textbf{Difference} \\ \midrule
 Return & \textbf{0.7050} & -0.4163 & 1.1213 \\
@@ -364,7 +364,7 @@ The lstm2\_large is the only RNN which generates higher cumulative returns than 
 \indent\newline 
 \begin{table}[ht]
 \centering
-\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|c}
+\resizebox{10cm}{!}{\begin{tabular}{l|cc|c}
 \toprule
 Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_large} & \textbf{Difference} \\ \midrule
 Return & \textbf{2.6358} & 0.2158 & 2.4200 \\
@@ -444,7 +444,7 @@ Figure 5.10 illustrates how all of the RNNs underperform the benchmark. The lstm
 \indent\newline 
 \begin{table}[ht]
 \centering
-\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|c}
+\resizebox{10cm}{!}{\begin{tabular}{l|cc|c}
 \toprule
 Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_large} & \textbf{Difference} \\ \midrule
 Return & \textbf{2.1462} & -0.3538 & 2.5000 \\
@@ -526,7 +526,7 @@ Similar to the small cap models the graph illustrates a negative correlation bet
 \indent\newline 
 \begin{table}[ht]
 \centering
-\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|c}
+\resizebox{10cm}{!}{\begin{tabular}{l|cc|c}
 \toprule
 Annualized & \textbf{lstm2\_small} & \textbf{lstm2\_large} & \textbf{Difference} \\ \midrule
 Return & \textbf{0.4840} & -0.0300 & 0.5140 \\
@@ -606,7 +606,7 @@ The figure above further illustrates the poor performance of the large cap model
 \indent\newline 
 \begin{table}[ht]
 \centering
-\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|c}
+\resizebox{10cm}{!}{\begin{tabular}{l|cc|c}
 \toprule
 Annualized & \textbf{lstm1\_small} & \textbf{lstm2\_large} & \textbf{Difference} \\ \midrule
 Return & \textbf{-0.0944} & -0.6497 & 0.5553 \\
@@ -632,6 +632,18 @@ Analyzing the top-performing model for both small cap and large cap stocks after
 The resulting findings suggest RNNs can be employed to predicting small cap stock returns for all portfolio strategies and outperform large cap stocks and relevant benchmarks, except short-only (after accounting for transaction costs). The lstm1\_small network is the most suitable model for predicting small cap stock returns, and generates the overall best portfolio results. Providing the models with extra input features do not seem to improve model performance, which can be a result of the main input feature of previous returns reflecting the impact of all the additional independent variables. The list below summarize the difference in annualized Sharpe ratio for the top-performing small cap and large cap models for each portfolio strategy.
 
 \indent\newline
+\begin{table}[ht]
+\centering
+\caption{\textbf{Best Annualized Sharpe ratio prior to transaction costs - small vs large}}
+\resizebox{\textwidth}{!}{\begin{tabular}{l|cc|cc|c}
+\toprule
+\textbf{Sharpe ratio} & \textbf{lstm1\_small} & \textbf{lstm2\_small} & \textbf{grui8\_large} & \textbf{lstm2\_large} & \textbf{Difference} \\ \midrule
+\textbf{Long portfolio} & 3.17 & & 0.84 & & 2.33 \\
+\textbf{Long-short portfolio} & 2.67 & & &0.50 & 2.17 \\
+\textbf{Short portfolio} & & 0.99 & & -0.17 & 1.16 \\  \bottomrule
+\end{tabular}}
+\end{table}
+
 \textbf{Annualized Sharpe ratio prior to transaction costs:}
 \indent\newline
 \textbf{Long portfolio} 
