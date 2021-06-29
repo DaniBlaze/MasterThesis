@@ -440,7 +440,7 @@ Assessing the large cap models after implementing broker commissions shows all o
 \label{fig:5050largec}
 \end{figure} 
 \indent\newline 
-Figure 5.10 illustrates how all of the RNNs underperform the benchmark. The lstm2\_large outperforms the benchmark during a short period between 2013 and 2014, but quickly starts to decline after this period, ending with cumulative returns of -284\%.
+Figure 5.11 illustrates how all of the RNNs underperform the benchmark. The lstm2\_large outperforms the benchmark during a short period between 2013 and 2014, but quickly starts to decline after this period, ending with cumulative returns of -284\%.
 \indent\newline 
 \begin{table}[ht]
 \centering
@@ -629,7 +629,7 @@ Total number of trades & \textbf{13,193} & 14,219 & -1,026 \\ \bottomrule
 Analyzing the top-performing model for both small cap and large cap stocks after including transaction costs, reveals that the RNNs should not be employed to short-only portfolios. While neither model is able to generate positive returns, there are still significant differences in portfolio performance. The lstm1\_small generates a 55 percentage points higher annualized return and a 2.28 higher Sharpe ratio, which translates into a difference in cumulative returns of 445 percentage points. Choosing a portfolio strategy consisting of only shorting stocks, where positions are opened and closed on a daily basis, may not be a realistic trading strategy. This is because short-selling requires lending shares, which may not be available at all times or for all stocks. 
 
 \section{Summary of Results}
-The resulting findings suggest RNNs can be employed to predicting small cap stock returns for all portfolio strategies and outperform large cap stocks and relevant benchmarks, except short-only (after accounting for transaction costs). The lstm1\_small network is the most suitable model for predicting small cap stock returns, and generates the overall best portfolio results. Providing the models with extra input features do not seem to improve model performance, which can be a result of the main input feature of previous returns reflecting the impact of all the additional independent variables. The list below summarize the difference in annualized Sharpe ratio for the top-performing small cap and large cap models for each portfolio strategy.
+The resulting findings suggest RNNs can be employed to predicting small cap stock returns for all portfolio strategies and outperform large cap stocks and relevant benchmarks, except short-only (after accounting for transaction costs). The lstm1\_small network is the most suitable model for predicting small cap stock returns, and generates the overall best portfolio results. Providing the models with extra input features do not seem to improve model performance, which can be a result of the main input feature of previous returns reflecting the impact of all the additional independent variables. An overall risk assessment finds the small cap model to have less downside risk. The large cap models show inferior performance in terms of max drawdown and value at risk. The list below summarize the difference in annualized Sharpe ratio for the top-performing small cap and large cap models for each portfolio strategy.
 
 \indent\newline
 \textbf{Annualized Sharpe ratio prior to transaction costs:}
