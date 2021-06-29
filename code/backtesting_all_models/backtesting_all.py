@@ -12,8 +12,8 @@ stockCount = 5
 neturalCount = 4
 long_prob = (stockCount * -1)
 short_prob = stockCount
-netural_long_prob = neturalCount
-netural_short_prob = neturalCount
+netural_long_prob = -2
+netural_short_prob = 2
 plot_colors = ['red', 'blue', 'purple', 'green', 'cyan', 'orange', 'pink']
 avg_10y_bonds_2013_2020 = 0.0172875
 
@@ -24,13 +24,13 @@ class Portfolio:
         #long
         self.long_only_profit_nocost = {}
         self.long_only_accuprofit_nocost = {}
-        self.long_only_nocost_accu_profit = 1
+        self.long_only_nocost_accu_profit = 0.000001
         self.long_only_nocost_return = 0
         self.long_only_nocost_sd = 0
 
         self.long_only_profit_cost = {}
         self.long_only_accuprofit_cost = {}
-        self.long_only_cost_accu_profit = 1
+        self.long_only_cost_accu_profit = 0.000001
         self.long_only_cost_return = 0
         self.long_only_cost_sd = 0
 
@@ -39,13 +39,13 @@ class Portfolio:
         #short
         self.short_only_profit_nocost = {}
         self.short_only_accuprofit_nocost = {}
-        self.short_only_nocost_accu_profit = 1
+        self.short_only_nocost_accu_profit = 0.000001
         self.short_only_nocost_return = 0
         self.short_only_nocost_sd = 0
 
         self.short_only_profit_cost = {}
         self.short_only_accuprofit_cost = {}
-        self.short_only_cost_accu_profit = 1
+        self.short_only_cost_accu_profit = 0.000001
         self.short_only_cost_return = 0
         self.short_only_cost_sd = 0
 
@@ -54,13 +54,13 @@ class Portfolio:
         #netural
         self.netural_only_profit_nocost = {}
         self.netural_only_accuprofit_nocost = {}
-        self.netural_only_nocost_accu_profit = 1
+        self.netural_only_nocost_accu_profit = 0.000001
         self.netural_only_nocost_return = 0
         self.netural_only_nocost_sd = 0
 
         self.netural_only_profit_cost = {}
         self.netural_only_accuprofit_cost = {}
-        self.netural_only_cost_accu_profit = 1
+        self.netural_only_cost_accu_profit = 0.000001
         self.netural_only_cost_return = 0
         self.netural_only_cost_sd = 0
 
@@ -103,67 +103,115 @@ def rebalance_percentage(ds_1,ds_2):
 
 def calculate_returns(pf, returns, benchmark=False):
     date_list = list(pf.predictions.Date.unique())
-    for date in date_list[:-1]:
+    for date in date_list:
         # No cost
         data_date = pf.predictions[pf.predictions.Date == date]
         long_part = data_date
         short_part = data_date
+        netural_long_part = data_date
+        netural_short_part = data_date
         if (benchmark is False):
-            long_part = data_date.iloc[long_prob:]
-            short_part = data_date.iloc[:short_prob]
+            long_part = long_part.iloc[long_prob:]
+            short_part = short_part.iloc[:short_prob]
+            netural_long_part = netural_long_part.iloc[netural_long_prob:]
+            netural_short_part = netural_short_part.iloc[:netural_short_prob]
         long_df = long_part.merge(returns,how='left',on = ['Date','Ticker'])
         short_df = short_part.merge(returns,how='left',on = ['Date', 'Ticker'])
+        netural_long_df = netural_long_part.merge(returns,how='left',on = ['Date','Ticker'])
+        netural_short_df = netural_short_part.merge(returns,how='left',on = ['Date','Ticker'])
         long_daily_profit = long_df['Returns'].mean()
         pf.long_only_nocost_accu_profit += long_daily_profit
         pf.long_only_profit_nocost.update({date:long_daily_profit})
         pf.long_only_accuprofit_nocost.update({date:pf.long_only_nocost_accu_profit})
 
-        short_daily_profit = (-1) * (short_df['Returns'].mean())
+        short_daily_profit = ((-1) * (short_df['Returns'].mean()))
         pf.short_only_nocost_accu_profit += short_daily_profit
         pf.short_only_profit_nocost.update({date:short_daily_profit})
         pf.short_only_accuprofit_nocost.update({date:pf.short_only_nocost_accu_profit})
 
+        netural_long_daily_profit = netural_long_df['Returns'].mean()
+        netural_short_daily_profit = ((-1) * (netural_short_df['Returns'].mean()))
+        netural_daily_profit = netural_long_daily_profit + netural_short_daily_profit
+        pf.netural_only_nocost_accu_profit += netural_daily_profit
+        pf.netural_only_profit_nocost.update({date:netural_daily_profit})
+        pf.netural_only_accuprofit_nocost.update({date:pf.netural_only_nocost_accu_profit})
+
         # Cost
-        date_index = date_list.index(date)
-        long_part_next = pf.predictions[pf.predictions.Date == date_list[date_index+1]]
-        short_part_next = pf.predictions[pf.predictions.Date == date_list[date_index+1]]
-        if (benchmark is False):
-            long_part_next = long_part_next.iloc[long_prob:]
-            short_part_next = short_part_next.iloc[:short_prob]
-        long_ds_1 = long_part['Ticker']
-        long_ds_2 = long_part_next['Ticker']
-        long_rebalance_perc = rebalance_percentage(long_ds_1,long_ds_2)
+        long_rebalance_perc = 0.0
+        short_rebalance_perc = 0.0
+        netural_long_rebalance_perc = 0.0
+        netural_short_rebalance_perc = 0.0
+        if (date != date_list[-1]):
+            if (benchmark is False):
+                date_index = date_list.index(date)
+                next_day = pf.predictions[pf.predictions.Date == date_list[date_index+1]]
+                long_part_next = next_day
+                short_part_next = next_day
+                netural_long_part_next = next_day
+                netural_short_part_next = next_day
+                long_part_next = long_part_next.iloc[long_prob:]
+                short_part_next = short_part_next.iloc[:short_prob]
+                netural_long_part_next = netural_long_part_next.iloc[netural_long_prob:]
+                netural_short_part_next = netural_short_part_next.iloc[:netural_short_prob]
+                long_ds_1 = long_part['Ticker']
+                long_ds_2 = long_part_next['Ticker']
+                long_rebalance_perc = rebalance_percentage(long_ds_1,long_ds_2)
+                short_ds_1 = short_part['Ticker']
+                short_ds_2 = short_part_next['Ticker']
+                short_rebalance_perc = rebalance_percentage(short_ds_1,short_ds_2)
+                netural_long_ds_1 = netural_long_part['Ticker']
+                netural_long_ds_2 = netural_long_part_next['Ticker']
+                netural_long_rebalance_perc = rebalance_percentage(netural_long_ds_1, netural_long_ds_2)
+                netural_short_ds_1 = netural_short_part['Ticker']
+                netural_short_ds_2 = netural_short_part_next['Ticker']
+                netural_short_rebalance_perc = rebalance_percentage(netural_short_ds_1, netural_short_ds_2)
+
         pf.long_cum_rebalance += long_rebalance_perc
         long_daily_profit_with_cost = (long_daily_profit - (0.00035*stockCount*2*long_rebalance_perc))
         pf.long_only_cost_accu_profit += long_daily_profit_with_cost
         pf.long_only_profit_cost.update({date:long_daily_profit_with_cost})
         pf.long_only_accuprofit_cost.update({date:pf.long_only_cost_accu_profit})
 
-        short_ds_1 = short_part['Ticker']
-        short_ds_2 = short_part_next['Ticker']
-        short_rebalance_perc = rebalance_percentage(short_ds_1,short_ds_2)
-        pf.short_cum_rebalance += long_rebalance_perc
+        pf.short_cum_rebalance += short_rebalance_perc
         short_daily_profit_with_cost = (short_daily_profit - (0.00035*stockCount*2*short_rebalance_perc))
         pf.short_only_cost_accu_profit += short_daily_profit_with_cost
         pf.short_only_profit_cost.update({date:short_daily_profit_with_cost})
         pf.short_only_accuprofit_cost.update({date:pf.short_only_cost_accu_profit})
+
+        pf.netural_cum_rebalance += ((netural_long_rebalance_perc + netural_short_rebalance_perc) / 2)
+        netural_long_daily_profit_with_cost = (netural_long_daily_profit - (0.00035*netural_short_prob*2*netural_long_rebalance_perc))
+        netural_short_daily_profit_with_cost = (netural_short_daily_profit - (0.00035*netural_short_prob*2*netural_short_rebalance_perc))
+        netural_daily_profit_with_cost = netural_long_daily_profit_with_cost + netural_short_daily_profit_with_cost
+        pf.netural_only_cost_accu_profit += netural_daily_profit_with_cost
+        pf.netural_only_profit_cost.update({date:netural_daily_profit_with_cost})
+        pf.netural_only_accuprofit_cost.update({date:pf.netural_only_cost_accu_profit})
         
     #Long
-    pf.long_only_nocost_return = (pf.long_only_nocost_accu_profit)/(len(date_list)-1)
+    pf.long_only_nocost_return = (pf.long_only_nocost_accu_profit)/(len(date_list))
     pf.long_only_nocost_sd = statistics.stdev(pf.long_only_profit_nocost.values())
 
-    pf.long_only_cost_return = (pf.long_only_cost_accu_profit)/(len(date_list)-1)
+    pf.long_only_cost_return = (pf.long_only_cost_accu_profit)/(len(date_list))
     pf.long_only_cost_sd = statistics.stdev(pf.long_only_profit_cost.values())
 
     #Short
-    pf.short_only_nocost_return = (pf.short_only_nocost_accu_profit)/(len(date_list)-1)
+    pf.short_only_nocost_return = (pf.short_only_nocost_accu_profit)/(len(date_list))
     pf.short_only_nocost_sd = statistics.stdev(pf.short_only_profit_nocost.values())
 
-    pf.short_only_cost_return = (pf.short_only_cost_accu_profit)/(len(date_list)-1)
+    pf.short_only_cost_return = (pf.short_only_cost_accu_profit)/(len(date_list))
     pf.short_only_cost_sd = statistics.stdev(pf.short_only_profit_cost.values())
+
+    #Netural
+    pf.netural_only_nocost_return = (pf.netural_only_nocost_accu_profit)/(len(date_list))
+    pf.netural_only_nocost_sd = statistics.stdev(pf.netural_only_profit_nocost.values())
+
+    pf.netural_only_cost_return = (pf.netural_only_cost_accu_profit)/(len(date_list))
+    pf.netural_only_cost_sd = statistics.stdev(pf.netural_only_profit_cost.values())
 
 def calc_trades(cum_rebalance):
     return int(cum_rebalance * stockCount * 2) # buy and sell
+
+def calc_netural_trades(cum_rebalance):
+    return int(cum_rebalance * neturalCount * 2) # buy and sell
 
 def calc_avg_annual_returns(returns, trading_days, trading_year):
     fraction_year = trading_days / trading_year
@@ -181,11 +229,13 @@ def calc_value_at_risk(sig_interval, avg_annual_returns, avg_annual_stdev):
 
 def calc_max_drawdown(accuprofit):
     xs = list(accuprofit.values())
-    bottom_point = np.argmax((np.maximum.accumulate(xs) - xs) / np.maximum.accumulate(xs))
+    bottom_point = np.argmax((np.maximum.accumulate(xs) - xs))
+    if not xs[:bottom_point]:
+        return MDD("N/A", "N/A", "N/A")
     peak_point = np.argmax(xs[:bottom_point])
     peak_return = xs[peak_point]
     bottom_return = xs[bottom_point]
-    mdd = (bottom_return - peak_return) / peak_return
+    mdd = peak_return - bottom_return
     return MDD(peak_return, bottom_return, mdd)
 
 def create_data_frame(name_list, start_date_list, end_date_list, trading_days_list, trades_list, accrued_list, avg_annual_return_list, avg_daily_list, 
@@ -204,8 +254,8 @@ def create_data_frame(name_list, start_date_list, end_date_list, trading_days_li
     'SharpeRatio': sharpe_ratio_list,
     'AnnualVaR95': value_at_risk_list,
     'Mdd': mdd_list,
-    'MddPeakPoint': mdd_peak_list,
-    'MddBottomPoint': mdd_bottom_list
+    'MddPeak': mdd_peak_list,
+    'MddBottom': mdd_bottom_list
     })
 
 def portfolio_long_stats(portfolio_long_list):
@@ -226,7 +276,7 @@ def portfolio_long_stats(portfolio_long_list):
     mdd_bottom_list = list()
     for pf in portfolio_long_list:
         date_list = list(pf.predictions.Date.unique())
-        trading_days = len(date_list) -1
+        trading_days = len(date_list)
         trading_year = 250.0
         name_list.append(pf.name + "_no_cost")
         name_list.append(pf.name + "_cost")
@@ -288,7 +338,7 @@ def portfolio_short_stats(portfolio_short_list):
     mdd_bottom_list = list()
     for pf in portfolio_short_list:
         date_list = list(pf.predictions.Date.unique())
-        trading_days = len(date_list) -1
+        trading_days = len(date_list)
         trading_year = 250.0
         name_list.append(pf.name + "_no_cost")
         name_list.append(pf.name + "_cost")
@@ -332,6 +382,68 @@ def portfolio_short_stats(portfolio_short_list):
     return create_data_frame(name_list, start_date_list, end_date_list, trading_days_list, trades_list, accrued_list, avg_annual_return_list, avg_daily_list, 
                         avg_annual_stdev_list, stdev_list, sharpe_ratio_list, value_at_risk_list, mdd_list, mdd_peak_list, mdd_bottom_list)
 
+def portfolio_netural_stats(portfolio_netural_list):
+    name_list = list()
+    start_date_list = list()
+    end_date_list = list()
+    trading_days_list = list()
+    trades_list = list()
+    accrued_list = list()
+    avg_daily_list = list()
+    stdev_list = list()
+    avg_annual_return_list = list()
+    avg_annual_stdev_list = list()
+    sharpe_ratio_list = list()
+    value_at_risk_list = list()
+    mdd_list = list()
+    mdd_peak_list = list()
+    mdd_bottom_list = list()
+    for pf in portfolio_netural_list:
+        date_list = list(pf.predictions.Date.unique())
+        trading_days = len(date_list)
+        trading_year = 250.0
+        name_list.append(pf.name + "_no_cost")
+        name_list.append(pf.name + "_cost")
+        start_date_list.append(date_list[0])
+        start_date_list.append(date_list[0])
+        end_date_list.append(date_list[-1])
+        end_date_list.append(date_list[-1])
+        trading_days_list.append(trading_days)
+        trading_days_list.append(trading_days)
+        trades = calc_netural_trades(pf.netural_cum_rebalance)
+        trades_list.append(trades)
+        trades_list.append(trades)
+        accrued_list.append(pf.netural_only_nocost_accu_profit)
+        accrued_list.append(pf.netural_only_cost_accu_profit)
+        avg_daily_list.append(pf.netural_only_nocost_return)
+        avg_daily_list.append(pf.netural_only_cost_return)
+        stdev_list.append(pf.netural_only_nocost_sd)
+        stdev_list.append(pf.netural_only_cost_sd)
+        avg_annual_returns_no_cost = calc_avg_annual_returns(pf.netural_only_nocost_accu_profit, trading_days, trading_year)
+        avg_annual_returns_cost = calc_avg_annual_returns(pf.netural_only_cost_accu_profit, trading_days, trading_year)
+        avg_annual_return_list.append(avg_annual_returns_no_cost)
+        avg_annual_return_list.append(avg_annual_returns_cost)
+        avg_annual_stdev_no_cost = calc_avg_annual_stdev(pf.netural_only_nocost_sd, trading_year)
+        avg_annual_stdev_cost = calc_avg_annual_stdev(pf.netural_only_cost_sd, trading_year)
+        avg_annual_stdev_list.append(avg_annual_stdev_no_cost)
+        avg_annual_stdev_list.append(avg_annual_stdev_cost)
+        sharpe_ratio_no_cost = calc_sharpe_ratio(avg_annual_returns_no_cost, avg_annual_stdev_no_cost)
+        sharpe_ratio_cost = calc_sharpe_ratio(avg_annual_returns_cost, avg_annual_stdev_cost)
+        sharpe_ratio_list.append(sharpe_ratio_no_cost)
+        sharpe_ratio_list.append(sharpe_ratio_cost)
+        value_at_risk_list.append(calc_value_at_risk(0.05, avg_annual_returns_no_cost, avg_annual_stdev_no_cost))
+        value_at_risk_list.append(calc_value_at_risk(0.05, avg_annual_returns_cost, avg_annual_stdev_cost))
+        mdd_no_cost = calc_max_drawdown(pf.netural_only_accuprofit_nocost)
+        mdd_cost = calc_max_drawdown(pf.netural_only_accuprofit_cost)
+        mdd_list.append(mdd_no_cost.mdd)
+        mdd_list.append(mdd_cost.mdd)
+        mdd_peak_list.append(mdd_no_cost.peak_return)
+        mdd_peak_list.append(mdd_cost.peak_return)
+        mdd_bottom_list.append(mdd_no_cost.bottom_return)
+        mdd_bottom_list.append(mdd_cost.bottom_return)
+    return create_data_frame(name_list, start_date_list, end_date_list, trading_days_list, trades_list, accrued_list, avg_annual_return_list, avg_daily_list, 
+                        avg_annual_stdev_list, stdev_list, sharpe_ratio_list, value_at_risk_list, mdd_list, mdd_peak_list, mdd_bottom_list)
+
 # Reading csv-file using a relative path, based on the folder structure of the github project
 file_path = path.Path(__file__).parent / "return_data/returns.csv"
 with file_path.open() as dataset_file:
@@ -359,9 +471,9 @@ benchmark_large = Portfolio('benchmark_large', lstm1_large_predictions)
 pf_lstm1_large = Portfolio('lstm1_large', lstm1_large_predictions)
 pf_lstm2_large = Portfolio('lstm2_large', lstm2_large_predictions)
 pf_lstm3_large = Portfolio('lstm3_large', lstm3_large_predictions)
-pf_lstm1_8i_large = Portfolio('lstm1_8i_large', lstm1_8i_large_predictions)
+pf_lstm1_8i_large = Portfolio('lstmi8_large', lstm1_8i_large_predictions)
 pf_gru1_large = Portfolio('gru1_large', gru1_large_predictions)
-pf_gru1_8i_large= Portfolio('gru1_8i_large', gru1_8i_large_predictions)
+pf_gru1_8i_large= Portfolio('grui8_large', gru1_8i_large_predictions)
 
 # Small cap
 lstm1_small_predictions = pd.read_csv('prediction/lstm1_small_predictions.csv',index_col = 0)
@@ -382,14 +494,15 @@ benchmark_small = Portfolio('benchmark_small', lstm1_small_predictions)
 pf_lstm1_small = Portfolio('lstm1_small', lstm1_small_predictions)
 pf_lstm2_small = Portfolio('lstm2_small', lstm2_small_predictions)
 pf_lstm3_small = Portfolio('lstm3_small', lstm3_small_predictions)
-pf_lstm1_8i_small = Portfolio('lstm1_8i_small', lstm1_8i_small_predictions)
+pf_lstm1_8i_small = Portfolio('lstmi8_small', lstm1_8i_small_predictions)
 pf_gru1_small = Portfolio('gru1_small', gru1_small_predictions)
-pf_gru1_8i_small = Portfolio('gru1_8i_small', gru1_8i_small_predictions)
+pf_gru1_8i_small = Portfolio('grui8_small', gru1_8i_small_predictions)
 
 # Entire portfolio list
-#portfolio_list = [pf_lstm1_small]
-portfolio_list = [benchmark_large, pf_lstm1_large, pf_lstm2_large, pf_lstm3_large, pf_lstm1_8i_large, pf_gru1_large, pf_gru1_8i_large,
-                  benchmark_small, pf_lstm1_small, pf_lstm2_small, pf_lstm3_small, pf_lstm1_8i_small, pf_gru1_small, pf_gru1_8i_small]
+#portfolio_list = [pf_lstm2_small]
+portfolio_list = [benchmark_large, benchmark_small, pf_lstm1_small, pf_lstm2_small, pf_lstm2_large]
+#portfolio_list = [benchmark_large, pf_lstm1_large, pf_lstm2_large, pf_lstm3_large, pf_lstm1_8i_large, pf_gru1_large, pf_gru1_8i_large,
+#                  benchmark_small, pf_lstm1_small, pf_lstm2_small, pf_lstm3_small, pf_lstm1_8i_small, pf_gru1_small, pf_gru1_8i_small]
 
 for pf in portfolio_list:
     print("Calculating long only returns for portfolio \"" + pf.name + "\" from " +
@@ -412,91 +525,341 @@ df_short_stat = df_short_stat.sort_values(['SumReturns'], ascending = False)
 print(df_short_stat)
 df_short_stat.to_csv('pf_short_statistics.csv')
 
+print("Collecting netural statistics...")
+df_netural_stat = portfolio_netural_stats(portfolio_list)
+df_netural_stat = df_netural_stat.sort_values(['SumReturns'], ascending = False)
+print(df_netural_stat)
+df_netural_stat.to_csv('pf_netural_statistics.csv')
 
-portfolio_list_large = [pf_lstm1_large, pf_lstm2_large, pf_lstm3_large, pf_lstm1_8i_large, pf_gru1_large, pf_gru1_8i_large]
-portfolio_list_small = [pf_lstm1_small, pf_lstm2_small, pf_lstm3_small, pf_lstm1_8i_small, pf_gru1_small, pf_gru1_8i_small]
-portfolio_list_mix = [pf_lstm1_small, pf_lstm2_small, pf_lstm2_large, pf_gru1_8i_large]
+#portfolio_list_large = [pf_lstm1_large, pf_lstm2_large, pf_lstm3_large, pf_lstm1_8i_large, pf_gru1_large, pf_gru1_8i_large]
+#portfolio_list_small = [pf_lstm1_small, pf_lstm2_small, pf_lstm3_small, pf_lstm1_8i_small, pf_gru1_small, pf_gru1_8i_small]
+#portfolio_list_mix = [pf_lstm1_small, pf_lstm2_small, pf_lstm2_large, pf_gru1_8i_large]
+#portfolio_list_mix_cost = [pf_lstm1_small, pf_lstm2_small, pf_lstm2_large, pf_lstm1_8i_large]
 
 print("Start drawing...")
-# Plot line chart for cumulative return from 2012 - 2020 for all long large cap predictions, prior to transaction cost
+'''
+###################
+##### LONG ########
+###################
+# Plot line chart for cumulative return from 2012 - 2020 for all long large cap predictions
 for i in range(len(portfolio_list_large)):
     pf = portfolio_list_large[i]
     color = plot_colors[i]
     date_list = list(pf.predictions.Date.unique())
-    date_ar = date_list[:-1]
+    date_ar = date_list
     plt.plot(date_ar, pf.long_only_accuprofit_nocost.values(), color = color, label = pf.name)
-plt.plot(list(benchmark_large.predictions.Date.unique())[:-1], benchmark_large.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_large.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_large.name)
 plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
 plt.xticks(rotation=90)
 plt.legend()
-plt.ylabel('Cumulative Return On Large Cap No Cost')
+plt.ylabel('Cumulative Returns')
+plt.title('Large Cap - Long - Prior To Cost')
 plt.tight_layout()
-plt.savefig('plots/cumulative_large_cap_return_no_cost.png')
+plt.savefig('plots/long/cumulative_large_cap_return_no_cost.png')
 plt.clf()
 
-# Plot line chart for cumulative return from 2012 - 2020 for all long small cap predictions, prior to transaction cost
+# Plot line chart for cumulative return from 2012 - 2020 for all long small cap predictions
 for i in range(len(portfolio_list_small)):
     pf = portfolio_list_small[i]
     color = plot_colors[i]
     date_list = list(pf.predictions.Date.unique())
-    date_ar = date_list[:-1]
+    date_ar = date_list
     plt.plot(date_ar, pf.long_only_accuprofit_nocost.values(), color = color, label = pf.name)
-plt.plot(list(benchmark_small.predictions.Date.unique())[:-1], benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
 plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
 plt.xticks(rotation=90)
 plt.legend()
-plt.ylabel('Cumulative Return On Small Cap No Cost')
+plt.ylabel('Cumulative Returns')
+plt.title('Small Cap - Long - Prior To Cost')
 plt.tight_layout()
-plt.savefig('plots/cumulative_small_cap_return_no_cost.png')
+plt.savefig('plots/long/cumulative_small_cap_return_no_cost.png')
 plt.clf()
 
-# Plot line chart for cumulative return from 2012 - 2020 for all long large cap predictions, prior to transaction cost
+# Plot line chart for cumulative return from 2012 - 2020 for all long large cap predictions
 for i in range(len(portfolio_list_large)):
     pf = portfolio_list_large[i]
     color = plot_colors[i]
     date_list = list(pf.predictions.Date.unique())
-    date_ar = date_list[:-1]
+    date_ar = date_list
     plt.plot(date_ar, pf.long_only_accuprofit_cost.values(), color = color, label = pf.name)
-plt.plot(list(benchmark_large.predictions.Date.unique())[:-1], benchmark_large.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_large.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_large.name)
 plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
 plt.xticks(rotation=90)
 plt.legend()
-plt.ylabel('Cumulative Return On Large Cap With Cost')
+plt.ylabel('Cumulative Returns')
+plt.title('Large Cap - Long - With Cost')
 plt.tight_layout()
-plt.savefig('plots/cumulative_large_cap_return_with_cost.png')
+plt.savefig('plots/long/cumulative_large_cap_return_with_cost.png')
 plt.clf()
 
-# Plot line chart for cumulative return from 2012 - 2020 for all long small cap predictions, prior to transaction cost
+# Plot line chart for cumulative return from 2012 - 2020 for all long small cap predictions
 for i in range(len(portfolio_list_small)):
     pf = portfolio_list_small[i]
     color = plot_colors[i]
     date_list = list(pf.predictions.Date.unique())
-    date_ar = date_list[:-1]
+    date_ar = date_list
     plt.plot(date_ar, pf.long_only_accuprofit_cost.values(), color = color, label = pf.name)
-plt.plot(list(benchmark_small.predictions.Date.unique())[:-1], benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
 plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
 plt.xticks(rotation=90)
 plt.legend()
-plt.ylabel('Cumulative Return On Small Cap With Cost')
+plt.ylabel('Cumulative Returns')
+plt.title('Small Cap - Long - With Cost')
 plt.tight_layout()
-plt.savefig('plots/cumulative_small_cap_return_with_cost.png')
+plt.savefig('plots/long/cumulative_small_cap_return_with_cost.png')
 plt.clf()
 
+###################
+##### SHORT #######
+###################
+for i in range(len(portfolio_list_large)):
+    pf = portfolio_list_large[i]
+    color = plot_colors[i]
+    date_list = list(pf.predictions.Date.unique())
+    date_ar = date_list
+    plt.plot(date_ar, pf.short_only_accuprofit_nocost.values(), color = color, label = pf.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Large Cap - Short - Prior To Cost')
+plt.tight_layout()
+plt.savefig('plots/short/cumulative_large_cap_return_no_cost.png')
+plt.clf()
+
+for i in range(len(portfolio_list_small)):
+    pf = portfolio_list_small[i]
+    color = plot_colors[i]
+    date_list = list(pf.predictions.Date.unique())
+    date_ar = date_list
+    plt.plot(date_ar, pf.short_only_accuprofit_nocost.values(), color = color, label = pf.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Small Cap - Short - Prior To Cost')
+plt.tight_layout()
+plt.savefig('plots/short/cumulative_small_cap_return_no_cost.png')
+plt.clf()
+
+for i in range(len(portfolio_list_large)):
+    pf = portfolio_list_large[i]
+    color = plot_colors[i]
+    date_list = list(pf.predictions.Date.unique())
+    date_ar = date_list
+    plt.plot(date_ar, pf.short_only_accuprofit_cost.values(), color = color, label = pf.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Large Cap - Short - With Cost')
+plt.tight_layout()
+plt.savefig('plots/short/cumulative_large_cap_return_with_cost.png')
+plt.clf()
+
+for i in range(len(portfolio_list_small)):
+    pf = portfolio_list_small[i]
+    color = plot_colors[i]
+    date_list = list(pf.predictions.Date.unique())
+    date_ar = date_list
+    plt.plot(date_ar, pf.short_only_accuprofit_cost.values(), color = color, label = pf.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Small Cap - Short - With Cost')
+plt.tight_layout()
+plt.savefig('plots/short/cumulative_small_cap_return_with_cost.png')
+plt.clf()
+
+
+###################
+##### NETURAL #####
+###################
+for i in range(len(portfolio_list_large)):
+    pf = portfolio_list_large[i]
+    color = plot_colors[i]
+    date_list = list(pf.predictions.Date.unique())
+    date_ar = date_list
+    plt.plot(date_ar, pf.netural_only_accuprofit_nocost.values(), color = color, label = pf.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Large Cap - Neutral - Prior To Cost')
+plt.tight_layout()
+plt.savefig('plots/netural/cumulative_large_cap_return_no_cost.png')
+plt.clf()
+
+for i in range(len(portfolio_list_small)):
+    pf = portfolio_list_small[i]
+    color = plot_colors[i]
+    date_list = list(pf.predictions.Date.unique())
+    date_ar = date_list
+    plt.plot(date_ar, pf.netural_only_accuprofit_nocost.values(), color = color, label = pf.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Small Cap - Neutral - Prior To Cost')
+plt.tight_layout()
+plt.savefig('plots/netural/cumulative_small_cap_return_no_cost.png')
+plt.clf()
+
+for i in range(len(portfolio_list_large)):
+    pf = portfolio_list_large[i]
+    color = plot_colors[i]
+    date_list = list(pf.predictions.Date.unique())
+    date_ar = date_list
+    plt.plot(date_ar, pf.netural_only_accuprofit_cost.values(), color = color, label = pf.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Large Cap - Neutral - With Cost')
+plt.tight_layout()
+plt.savefig('plots/netural/cumulative_large_cap_return_with_cost.png')
+plt.clf()
+
+for i in range(len(portfolio_list_small)):
+    pf = portfolio_list_small[i]
+    color = plot_colors[i]
+    date_list = list(pf.predictions.Date.unique())
+    date_ar = date_list
+    plt.plot(date_ar, pf.netural_only_accuprofit_cost.values(), color = color, label = pf.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Small Cap - Neutral - With Cost')
+plt.tight_layout()
+plt.savefig('plots/netural/cumulative_small_cap_return_with_cost.png')
+plt.clf()
+
+###################
+##### MIX #########
+###################
 # Mix
 for i in range(len(portfolio_list_mix)):
     pf = portfolio_list_mix[i]
     color = plot_colors[i]
     date_list = list(pf.predictions.Date.unique())
-    date_ar = date_list[:-1]
+    date_ar = date_list
     plt.plot(date_ar, pf.long_only_accuprofit_nocost.values(), color = color, label = pf.name)
-plt.plot(list(benchmark_small.predictions.Date.unique())[:-1], benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
-plt.plot(list(benchmark_large.predictions.Date.unique())[:-1], benchmark_large.long_only_accuprofit_nocost.values(), color = 'gray', label = benchmark_large.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'gray', label = benchmark_large.name)
 plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
 plt.xticks(rotation=90)
 plt.legend()
-plt.ylabel('Best Cumulative Return On Mix Cap No Cost')
+plt.ylabel('Cumulative Returns')
+plt.title('Best Results - No Cost')
 plt.tight_layout()
-plt.savefig('plots/cumulative_best_mix_cap_return_no_cost.png')
+plt.savefig('plots/mix/cumulative_best_mix_cap_return_no_cost.png')
 plt.clf()
 
+for i in range(len(portfolio_list_mix_cost)):
+    pf = portfolio_list_mix_cost[i]
+    color = plot_colors[i]
+    date_list = list(pf.predictions.Date.unique())
+    date_ar = date_list
+    plt.plot(date_ar, pf.long_only_accuprofit_cost.values(), color = color, label = pf.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'gray', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Best Results - With Cost')
+plt.tight_layout()
+plt.savefig('plots/mix/cumulative_best_mix_cap_return_cost.png')
+plt.clf()
+print("Finished drawing!")
+'''
+###################
+##### MIX BEST SHORT #########
+###################
+plt.plot(list(pf_lstm2_small.predictions.Date.unique()), pf_lstm2_small.short_only_accuprofit_nocost.values(), color = 'red', label = pf_lstm2_small.name)
+plt.plot(list(pf_lstm2_large.predictions.Date.unique()), pf_lstm2_large.short_only_accuprofit_nocost.values(), color = 'blue', label = pf_lstm2_large.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'gray', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Best Short Results - No Cost')
+plt.tight_layout()
+plt.savefig('plots/mix/cumulative_best_short_mix_return_no_cost.png')
+plt.clf()
+
+plt.plot(list(pf_lstm1_small.predictions.Date.unique()), pf_lstm1_small.short_only_accuprofit_cost.values(), color = 'red', label = pf_lstm1_small.name)
+plt.plot(list(pf_lstm2_large.predictions.Date.unique()), pf_lstm2_large.short_only_accuprofit_cost.values(), color = 'blue', label = pf_lstm2_large.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'gray', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Best Short Results - Cost')
+plt.tight_layout()
+plt.savefig('plots/mix/cumulative_best_short_mix_return_cost.png')
+plt.clf()
+
+###################
+##### MIX BEST Neutral #########
+###################
+plt.plot(list(pf_lstm1_small.predictions.Date.unique()), pf_lstm1_small.netural_only_accuprofit_nocost.values(), color = 'red', label = pf_lstm1_small.name)
+plt.plot(list(pf_lstm2_large.predictions.Date.unique()), pf_lstm2_large.netural_only_accuprofit_nocost.values(), color = 'blue', label = pf_lstm2_large.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'gray', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Best Neutral Results - No Cost')
+plt.tight_layout()
+plt.savefig('plots/mix/cumulative_best_neutral_mix_return_no_cost.png')
+plt.clf()
+
+plt.plot(list(pf_lstm1_small.predictions.Date.unique()), pf_lstm1_small.netural_only_accuprofit_cost.values(), color = 'red', label = pf_lstm1_small.name)
+plt.plot(list(pf_lstm2_large.predictions.Date.unique()), pf_lstm2_large.netural_only_accuprofit_cost.values(), color = 'blue', label = pf_lstm2_large.name)
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'gray', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Best Neutral Results - Cost')
+plt.tight_layout()
+plt.savefig('plots/mix/cumulative_best_neutral_mix_return_cost.png')
+plt.clf()
+
+'''
+###################
+##### Best All #########
+###################
+plt.plot(list(pf_lstm1_small.predictions.Date.unique()), pf_lstm1_small.long_only_accuprofit_cost.values(), color = 'red', label = 'long_lstm1_small')
+plt.plot(list(pf_lstm1_8i_large.predictions.Date.unique()), pf_lstm1_8i_large.long_only_accuprofit_cost.values(), color = 'blue', label = 'long_lstmi8_large')
+plt.plot(list(pf_lstm1_small.predictions.Date.unique()), pf_lstm1_small.netural_only_accuprofit_cost.values(), color = 'purple', label = 'neutral_lstm1_small')
+plt.plot(list(pf_lstm2_large.predictions.Date.unique()), pf_lstm2_large.netural_only_accuprofit_cost.values(), color = 'green', label = 'neutral_lstm2_large')
+plt.plot(list(pf_lstm1_small.predictions.Date.unique()), pf_lstm1_small.short_only_accuprofit_cost.values(), color = 'cyan', label = 'short_lstm1_small')
+plt.plot(list(pf_lstm2_large.predictions.Date.unique()), pf_lstm2_large.short_only_accuprofit_cost.values(), color = 'orange', label = 'short_lstm2_large')
+plt.plot(list(benchmark_small.predictions.Date.unique()), benchmark_small.long_only_accuprofit_nocost.values(), color = 'brown', label = benchmark_small.name)
+plt.plot(list(benchmark_large.predictions.Date.unique()), benchmark_large.long_only_accuprofit_nocost.values(), color = 'gray', label = benchmark_large.name)
+plt.gca().xaxis.set_major_locator(ticker.MultipleLocator(240))
+plt.xticks(rotation=90)
+plt.legend()
+plt.ylabel('Cumulative Returns')
+plt.title('Best Cost Results Per Cap And Strategy')
+plt.tight_layout()
+plt.savefig('plots/mix/cumulative_best_cost_per_cap_and_strategy.png')
+plt.clf()
+'''
 print("Finished drawing!")
