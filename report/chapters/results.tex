@@ -634,7 +634,7 @@ The resulting findings suggest RNNs can be employed to predicting small cap stoc
 \indent\newline
 \begin{table}[ht]
 \centering
-\caption{\textbf{Best Annualized Sharpe ratio prior to transaction costs - small vs large}}
+\caption{Best Annualized Sharpe ratio prior to transaction costs - small vs large}
 \resizebox{\textwidth}{!}{\begin{tabular}{l|cc|cc|c}
 \toprule
 \textbf{Sharpe ratio} & \textbf{lstm1\_small} & \textbf{lstm2\_small} & \textbf{grui8\_large} & \textbf{lstm2\_large} & \textbf{Difference} \\ \midrule
@@ -644,25 +644,11 @@ The resulting findings suggest RNNs can be employed to predicting small cap stoc
 \end{tabular}}
 \end{table}
 
-\textbf{Annualized Sharpe ratio prior to transaction costs:}
 \indent\newline
-\textbf{Long portfolio} 
-\indent\newline
-lstm1\_small: \underline{3.17},  grui8\_large: \underline{0.84},  Difference: \underline{2.33}
-
-\indent\newline
-\textbf{Long-short portfolio} 
-\indent\newline
-lstm1\_small: \underline{2.67},  lstm2\_large: \underline{0.50},  Difference:  \underline{2.17}  
-
-\indent\newline
-\textbf{Short portfolio} 
-\indent\newline
-lstm2\_small: \underline{0.99},  lstm2\_large: \underline{-0.17},  Difference: \underline{1.16} 
 
 \begin{table}[ht]
 \centering
-\caption{\textbf{Best Annualized Sharpe ratio prior to transaction costs - small vs large}}
+\caption{Best Annualized Sharpe ratio after transaction costs - small vs large}
 \resizebox{\textwidth}{!}{\begin{tabular}{l|c|cc|c}
 \toprule
 \textbf{Sharpe ratio} & \textbf{lstm1\_small} & \textbf{lstmi8\_large} & \textbf{lstm2\_large} & \textbf{Difference} \\ \midrule
@@ -672,20 +658,3 @@ lstm2\_small: \underline{0.99},  lstm2\_large: \underline{-0.17},  Difference: \
 \end{tabular}}
 \end{table}
 
-\indent\newline
-\indent\newline
-\textbf{Annualized Sharpe ratio after transaction costs:}
-\indent\newline
-\textbf{Long portfolio} 
-\indent\newline
-lstm1\_small: \underline{1.92},  lstmi8\_large: \underline{-1.62},  Difference: \underline{3.54}
-
-\indent\newline
-\textbf{Long-short portfolio}
-\indent\newline
-lstm1\_small: \underline{2.17},  lstm2\_large: \underline{-0.93},  Difference: \underline{3.10} 
-  
-\indent\newline
-\textbf{Short portfolio} 
-\indent\newline
-lstm1\_small: \underline{-0.16},  lstm2\_large: \underline{-2.45},  Difference: \underline{2.29}  
